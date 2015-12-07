@@ -1,0 +1,96 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mail.Library", "Mail.Library\Mail.Library.csproj", "{BB1DD370-E641-4764-ADA8-EE879540C9BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mail.Client", "Mail.Client\Mail.Client.csproj", "{3705879B-11A3-4FE5-B90B-C4D47E42781D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mail.Plugin.MailKit", "Mail.Plugin.MailKit\Mail.Plugin.MailKit.csproj", "{B85794BB-4324-4511-97E4-E04540A30718}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mail.Plugin.MailSystem", "Mail.Plugin.MailSystem\Mail.Plugin.MailSystem.csproj", "{988791B2-F9BD-4379-8ACC-72A266D8F02D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mail.Library.Test", "Mail.Library.Test\Mail.Library.Test.csproj", "{A7F4B45B-BFAB-4879-BA40-415182F241F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mail.Plugin.MailKit.Test", "Mail.Plugin.MailKit.Test\Mail.Plugin.MailKit.Test.csproj", "{C0BD7E82-E5B0-496C-ACEB-6BD81B17E75D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core App", "Core App", "{0F3C6B77-2536-47C2-9398-D8A48360EAD7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{2752D5D3-4D98-4AC3-A8F3-13BA4B92DF60}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{FF601CB8-064D-4E5A-9AD1-B52E11C378E7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BB1DD370-E641-4764-ADA8-EE879540C9BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB1DD370-E641-4764-ADA8-EE879540C9BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB1DD370-E641-4764-ADA8-EE879540C9BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB1DD370-E641-4764-ADA8-EE879540C9BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3705879B-11A3-4FE5-B90B-C4D47E42781D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3705879B-11A3-4FE5-B90B-C4D47E42781D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3705879B-11A3-4FE5-B90B-C4D47E42781D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3705879B-11A3-4FE5-B90B-C4D47E42781D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B85794BB-4324-4511-97E4-E04540A30718}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B85794BB-4324-4511-97E4-E04540A30718}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B85794BB-4324-4511-97E4-E04540A30718}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B85794BB-4324-4511-97E4-E04540A30718}.Release|Any CPU.Build.0 = Release|Any CPU
+		{988791B2-F9BD-4379-8ACC-72A266D8F02D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{988791B2-F9BD-4379-8ACC-72A266D8F02D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{988791B2-F9BD-4379-8ACC-72A266D8F02D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{988791B2-F9BD-4379-8ACC-72A266D8F02D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7F4B45B-BFAB-4879-BA40-415182F241F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7F4B45B-BFAB-4879-BA40-415182F241F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7F4B45B-BFAB-4879-BA40-415182F241F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7F4B45B-BFAB-4879-BA40-415182F241F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0BD7E82-E5B0-496C-ACEB-6BD81B17E75D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0BD7E82-E5B0-496C-ACEB-6BD81B17E75D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0BD7E82-E5B0-496C-ACEB-6BD81B17E75D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0BD7E82-E5B0-496C-ACEB-6BD81B17E75D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BB1DD370-E641-4764-ADA8-EE879540C9BB} = {FF601CB8-064D-4E5A-9AD1-B52E11C378E7}
+		{3705879B-11A3-4FE5-B90B-C4D47E42781D} = {0F3C6B77-2536-47C2-9398-D8A48360EAD7}
+		{B85794BB-4324-4511-97E4-E04540A30718} = {2752D5D3-4D98-4AC3-A8F3-13BA4B92DF60}
+		{988791B2-F9BD-4379-8ACC-72A266D8F02D} = {2752D5D3-4D98-4AC3-A8F3-13BA4B92DF60}
+		{A7F4B45B-BFAB-4879-BA40-415182F241F2} = {FF601CB8-064D-4E5A-9AD1-B52E11C378E7}
+		{C0BD7E82-E5B0-496C-ACEB-6BD81B17E75D} = {2752D5D3-4D98-4AC3-A8F3-13BA4B92DF60}
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 7
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://fakhrulhilal.visualstudio.com/defaultcollection
+		SccProjectUniqueName0 = Mail.Library\\Mail.Library.csproj
+		SccProjectTopLevelParentUniqueName0 = Mail\u0020Client.sln
+		SccProjectName0 = Mail.Library
+		SccLocalPath0 = Mail.Library
+		SccProjectUniqueName1 = Mail.Client\\Mail.Client.csproj
+		SccProjectTopLevelParentUniqueName1 = Mail\u0020Client.sln
+		SccProjectName1 = Mail.Client
+		SccLocalPath1 = Mail.Client
+		SccProjectUniqueName2 = Mail.Plugin.MailKit\\Mail.Plugin.MailKit.csproj
+		SccProjectTopLevelParentUniqueName2 = Mail\u0020Client.sln
+		SccProjectName2 = Mail.Plugin.MailKit
+		SccLocalPath2 = Mail.Plugin.MailKit
+		SccProjectUniqueName3 = Mail.Plugin.MailSystem\\Mail.Plugin.MailSystem.csproj
+		SccProjectTopLevelParentUniqueName3 = Mail\u0020Client.sln
+		SccProjectName3 = Mail.Plugin.MailSystem
+		SccLocalPath3 = Mail.Plugin.MailSystem
+		SccProjectUniqueName4 = Mail.Library.Test\\Mail.Library.Test.csproj
+		SccProjectTopLevelParentUniqueName4 = Mail\u0020Client.sln
+		SccProjectName4 = Mail.Library.Test
+		SccLocalPath4 = Mail.Library.Test
+		SccProjectUniqueName5 = Mail.Plugin.MailKit.Test\\Mail.Plugin.MailKit.Test.csproj
+		SccProjectTopLevelParentUniqueName5 = Mail\u0020Client.sln
+		SccProjectName5 = Mail.Plugin.MailKit.Test
+		SccLocalPath5 = Mail.Plugin.MailKit.Test
+		SccLocalPath6 = .
+	EndGlobalSection
+EndGlobal
