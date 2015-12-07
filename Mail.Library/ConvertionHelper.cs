@@ -1,0 +1,98 @@
+﻿using System;
+using System.Globalization;
+
+namespace Mail.Library
+{
+	public static class ConvertionHelper
+	{
+		public static bool? ToBoolean(string value, bool? defaultValue = null)
+		{
+			if (string.IsNullOrEmpty(value)) return defaultValue;
+			if (value == "1") return true;
+			if (value == "0") return false;
+			bool output;
+			return bool.TryParse(value, out output) ? output : defaultValue;
+		}
+
+		public static int? ToInteger(string value, int? defaultValue = null)
+		{
+			if (string.IsNullOrEmpty(value)) return defaultValue;
+			var numberFormat = CultureInfo.CurrentCulture.NumberFormat;
+			value = value.Replace(numberFormat.NumberGroupSeparator, string.Empty);
+			int output;
+			if (int.TryParse(value, out output)) return output;
+			return value.Contains(numberFormat.NumberDecimalSeparator)
+				? Convert.ToInt32(decimal.Parse(value))
+				: defaultValue;
+		}
+
+		public static decimal? ToDecimal(string value, decimal? defaultValue = null)
+		{
+			if (string.IsNullOrEmpty(value)) return defaultValue;
+			decimal output;
+			return decimal.TryParse(value, out output) ? output : defaultValue;
+		}
+
+		public static double? ToDouble(string value, double? defaultValue = null)
+		{
+			if (string.IsNullOrEmpty(value)) return defaultValue;
+			double output;
+			return double.TryParse(value, out output) ? output : defaultValue;
+		}
+
+		public static dynamic To(Type type, string value, object defaultValue = null)
+		{
+			value = (value ?? string.Empty).Trim();
+			if (type == typeof(string)) return value;
+			if (type == typeof(bool?) || type == typeof(bool))
+			{
+				bool? output = ToBoolean(value, (bool?)defaultValue);
+				if (type == typeof(bool?)) return output;
+				return output.HasValue ? output.Value : Convert.ToBoolean(defaultValue);
+			}
+			if (type == typeof(decimal?) || type == typeof(decimal))
+			{
+				decimal? output = ToDecimal(value, defaultValue as decimal?);
+				if (type == typeof(decimal?)) return output;
+				return output.HasValue ? output.Value : Convert.ToDecimal(defaultValue);
+			}
+			if (type == typeof(double?) || type == typeof(double))
+			{
+				double? output = ToDouble(value, defaultValue as double?);
+				if (type == typeof(double?)) return output;
+				return output.HasValue ? output.Value : Convert.ToDouble(defaultValue);
+			}
+			if (type == typeof(int?) || type == typeof(int))
+			{
+				int? output = ToInteger(value, defaultValue as int?);
+				if (type == typeof(int?)) return output;
+				return output.HasValue ? output.Value : Convert.ToInt32(defaultValue);
+			}
+		    if (type.IsEnum || (Nullable.GetUnderlyingType(type) != null && Nullable.GetUnderlyingType(type).IsEnum))
+		    {
+		        Type realType = Nullable.GetUnderlyingType(type) ?? type;
+		        bool isNullable = realType != type;
+		        try
+		        {
+		            var output = Enum.Parse(realType, value, true);
+		            return !isNullable
+		                ? output
+		                : System.ComponentModel.TypeDescriptor.GetConverter(type).ConvertFrom(output);
+		        }
+		        catch (Exception exception) when (exception is OverflowException || exception is ArgumentException) 
+		        {
+		            if (isNullable && defaultValue == null) return null;
+		            if (defaultValue == null) return Activator.CreateInstance(type);
+		            return Enum.IsDefined(realType, defaultValue)
+		                ? defaultValue
+		                : Activator.CreateInstance(type);
+		        }
+		    }
+
+			throw new NotSupportedException($"Not supported data type: {type.Name}");
+		}
+
+		public static TOutput To<TOutput>(string value, TOutput defaultValue = default(TOutput))
+			=> (TOutput)To(typeof(TOutput), value, defaultValue);
+	}
+}
