@@ -59,6 +59,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="AttributeHelperTest.cs" />
     <Compile Include="ConvertionHelperTest.cs" />
     <Compile Include="Configuration\IniConfigurationTest.cs" />
     <Compile Include="Configuration\IniLineParserTest.cs" />
