@@ -190,7 +190,7 @@ namespace Mail.Library.Configuration
         {
             var config = new TSection();
             var sectionType = config.GetType();
-            string sectionName = AttributeHelper.ClassAttribute<TSection, IniSectionAttribute, string>(attr => attr.Name).FirstOrDefault() ??
+            string sectionName = AttributeHelper.Class<TSection, IniSectionAttribute, string>(attr => attr.Name).FirstOrDefault() ??
                                  sectionType.Name;
             var section = configurations.OfType<IniSection>()
                 .FirstOrDefault(cfg => cfg.Name.Equals(sectionName, StringComparison.CurrentCultureIgnoreCase));
@@ -241,7 +241,7 @@ namespace Mail.Library.Configuration
             var sectionType = section.GetType();
             string sectionName = sectionType.ClassAttribute<IniSectionAttribute, string>(attr => attr.Name).FirstOrDefault() ??
                                  sectionType.Name;
-            string sectionComment = AttributeHelper.ClassAttribute<TSection, IniSectionAttribute, string>(attr => attr.Comment).FirstOrDefault();
+            string sectionComment = AttributeHelper.Class<TSection, IniSectionAttribute, string>(attr => attr.Comment).FirstOrDefault();
             var sectionConfig = MergeSection(sectionName, sectionComment);
             var properties = ExtractProperties(sectionType);
             foreach (var property in properties)
@@ -296,14 +296,14 @@ namespace Mail.Library.Configuration
         {
             if (config == null) throw new ArgumentNullException(nameof(config));
             var properties = ExtractProperties(typeof(TConfig));
-            foreach (var property in properties)
-            {
-                if (!property.Info.CanWrite || !property.HasDefaultValue) continue;
-                property.Info.SetValue(config, property.DefaultValue);
-            }
-        }
+			foreach (var property in properties)
+			{
+				if (!property.Info.CanWrite || !property.HasDefaultValue) continue;
+				property.Info.SetValue(config, property.DefaultValue);
+			}
+		}
 
-        private void WriteString(FileStream file, string line)
+		private void WriteString(FileStream file, string line)
         {
             var bytes = Encoding.Default.GetBytes(line + Environment.NewLine);
             file.Write(bytes, 0, bytes.Length);

@@ -38,7 +38,7 @@ namespace Mail.Library
 		/// <typeparam name="TExpected">Data type of attribute's member from <paramref name="attributeSelector"/></typeparam>
 		/// <param name="attributeSelector"></param>
 		/// <returns>The value of attribute's member from class attribute</returns>
-		public static TExpected[] ClassAttribute<TClass, TAttribute, TExpected>(
+		public static TExpected[] Class<TClass, TAttribute, TExpected>(
 			Expression<Func<TAttribute, TExpected>> attributeSelector)
 			=> ClassAttribute(typeof(TClass), attributeSelector);
 
@@ -72,7 +72,7 @@ namespace Mail.Library
 		/// <param name="memberName">Select member name from <typeparamref name="TClass"/></param>
 		/// <param name="attributeSelector">Select member of <typeparamref name="TAttribute"/></param>
 		/// <returns>The attribute's value from class member</returns>
-		public static TExpected[] MemberAttribute<TClass, TAttribute, TExpected>(string memberName, Expression<Func<TAttribute, TExpected>> attributeSelector) 
+		public static TExpected[] Member<TClass, TAttribute, TExpected>(string memberName, Expression<Func<TAttribute, TExpected>> attributeSelector) 
 			=> MemberAttribute(typeof(TClass), memberName, attributeSelector);
 
 		/// <summary>
@@ -84,13 +84,13 @@ namespace Mail.Library
 		/// <param name="memberSelector"></param>
 		/// <param name="attributeSelector">Select member of <typeparamref name="TAttribute"/></param>
 		/// <returns>The attribute's value from class member</returns>
-		public static TExpected[] MemberAttribute<TClass, TAttribute, TExpected>(
+		public static TExpected[] Member<TClass, TAttribute, TExpected>(
 			Expression<Func<TClass, object>> memberSelector,
 			Expression<Func<TAttribute, TExpected>> attributeSelector)
 		{
 			var classExpression = memberSelector.Body as MemberExpression;
 			if (classExpression == null) throw new ArgumentException("Please supply expression to field/property of class member", nameof(memberSelector));
-			return MemberAttribute<TClass, TAttribute, TExpected>(classExpression.Member.Name, attributeSelector);
+			return Member<TClass, TAttribute, TExpected>(classExpression.Member.Name, attributeSelector);
 		}
 	}
 }
