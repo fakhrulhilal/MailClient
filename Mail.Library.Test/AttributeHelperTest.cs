@@ -4,6 +4,7 @@ using NUnit.Framework;
 namespace Mail.Library.Test
 {
 	[TestFixture]
+	[Parallelizable(ParallelScope.Children)]
 	internal class AttributeHelperTest
 	{
 		[Test]
