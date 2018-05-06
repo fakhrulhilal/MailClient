@@ -9,9 +9,9 @@ namespace Mail.Library
 	public class Address : IValidatable
 	{
 		private const string MailRegex = @"(?<mail>(?<username>[a-z0-9\._]+)@(?<domain>[a-z0-9\-\._]+\.\w+))";
-		private readonly string fullRegex = $@"(?<display>[a-z0-9,\.\-_ ]+)\s*\<{MailRegex}>";
-        private readonly string originalAddress;
-		private readonly bool isOriginalAddressValid = true;
+		private readonly string _fullRegex = $@"(?<display>[a-z0-9,\.\-_ ]+)\s*\<{MailRegex}>";
+        private readonly string _originalAddress;
+		private readonly bool _isOriginalAddressValid = true;
 		public string Display { get; set; }
 
 		/// <summary>
@@ -27,7 +27,7 @@ namespace Mail.Library
 			get
 			{
 				if (string.IsNullOrEmpty(Email)) return null;
-				Match match = Regex.Match(Email, MailRegex, RegexOptions.IgnoreCase);
+				var match = Regex.Match(Email, MailRegex, RegexOptions.IgnoreCase);
 				return match.Success
 					? match.Groups["username"].Value
 					: null;
@@ -42,7 +42,7 @@ namespace Mail.Library
 			get
 			{
 				if (string.IsNullOrEmpty(Email)) return null;
-				Match match = Regex.Match(Email, MailRegex, RegexOptions.IgnoreCase);
+				var match = Regex.Match(Email, MailRegex, RegexOptions.IgnoreCase);
 				return match.Success
 					? match.Groups["domain"].Value
 					: null;
@@ -67,12 +67,12 @@ namespace Mail.Library
 		{
 			if (!string.IsNullOrEmpty(address))
 			{
-				originalAddress = address;
+				_originalAddress = address;
 				string email, display;
 				ParseDestination(address, out email, out display);
 				if (!string.IsNullOrEmpty(email)) Email = email;
 				if (!string.IsNullOrEmpty(display)) Display = display;
-				isOriginalAddressValid = !string.IsNullOrEmpty(email);
+				_isOriginalAddressValid = !string.IsNullOrEmpty(email);
 			}
 		}
 
@@ -101,8 +101,8 @@ namespace Mail.Library
 				messages.Add(StringHelper.Format("Email address is required", prefix));
 			else if (!Regex.IsMatch(Email, MailRegex, RegexOptions.IgnoreCase))
 				messages.Add(StringHelper.Format("Email is not valid format", prefix));
-			else if (!isOriginalAddressValid)
-				messages.Add($"{originalAddress} is not valid address");
+			else if (!_isOriginalAddressValid)
+				messages.Add($"{_originalAddress} is not valid address");
 			return new Validation(messages);
 		}
 
@@ -121,7 +121,7 @@ namespace Mail.Library
 			display = null;
 			if (string.IsNullOrEmpty(emailFormat)) return;
 			emailFormat = emailFormat.Trim();
-			var match = Regex.Match(emailFormat, fullRegex, RegexOptions.IgnoreCase);
+			var match = Regex.Match(emailFormat, _fullRegex, RegexOptions.IgnoreCase);
 			if (match.Success)
 			{
 				address = match.Groups["mail"].Value.Trim();

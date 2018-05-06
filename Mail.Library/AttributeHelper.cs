@@ -24,7 +24,7 @@ namespace Mail.Library
 			if (classType == null) throw new ArgumentNullException(nameof(classType));
 			var memberExpression = attributeSelector.Body as MemberExpression;
 			if (memberExpression == null) throw new ArgumentException("Please supply expression to field/property", nameof(attributeSelector));
-			TAttribute[] attributes = classType
+			var attributes = classType
 				.GetCustomAttributes(typeof(TAttribute), false)
 				.Cast<TAttribute>().ToArray();
 			return attributes.Length < 1 ? new TExpected[0] : attributes.Select(attributeSelector.Compile()).ToArray();
@@ -57,9 +57,9 @@ namespace Mail.Library
 			if (string.IsNullOrEmpty(memberName)) throw new ArgumentNullException(nameof(memberName));
 			var attributeExpression = attributeSelector.Body as MemberExpression;
 			if (attributeExpression == null) throw new ArgumentException("Please supply expression to field/property of attribute member", nameof(attributeExpression));
-			MemberInfo[] memberInfos = classType.GetMember(memberName);
+			var memberInfos = classType.GetMember(memberName);
 			if (memberInfos.Length < 1) throw new ArgumentException($"'{memberName}' is not valid member of {classType.Name}");
-			TAttribute[] attributes = memberInfos[0].GetCustomAttributes(typeof(TAttribute), false).Cast<TAttribute>().ToArray();
+			var attributes = memberInfos[0].GetCustomAttributes(typeof(TAttribute), false).Cast<TAttribute>().ToArray();
 			return attributes.Length < 1 ? new TExpected[0] : attributes.Select(attributeSelector.Compile()).ToArray();
 		}
 

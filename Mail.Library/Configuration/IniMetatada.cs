@@ -133,7 +133,7 @@ namespace Mail.Library.Configuration
 		        section = null;
 		        return false;
 		    }
-			Match match = SectionRegex.Match(line);
+			var match = SectionRegex.Match(line);
 			if (match.Success)
 			{
 				section = new IniSection(match.Groups["name"].Value.Trim());
@@ -158,7 +158,7 @@ namespace Mail.Library.Configuration
 		        keyValuePair = null;
 		        return false;
 		    }
-			Match match = PairRegex.Match(line);
+			var match = PairRegex.Match(line);
 			if (match.Success)
 			{
 				keyValuePair = new IniPair(match.Groups["name"].Value.Trim(), match.Groups["value"].Value.Trim());
@@ -183,7 +183,7 @@ namespace Mail.Library.Configuration
 		        comment = null;
 		        return false;
 		    }
-			Match match = CommentRegex.Match(line);
+			var match = CommentRegex.Match(line);
 			if (match.Success)
 			{
 				comment = new IniComment(match.Groups["comment"].Value.Trim());

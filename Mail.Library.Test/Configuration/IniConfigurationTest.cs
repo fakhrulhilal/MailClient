@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Threading;
 using Mail.Library.Configuration;
 using NUnit.Framework;
 
@@ -10,9 +11,9 @@ namespace Mail.Library.Test.Configuration
 	[Category("INIConfiguration")]
 	class IniConfigurationTest
 	{
-		private IniConfiguration configuration;
-		private IniConfiguration blankConfiguration;
-	    private readonly string tempPath = Path.GetTempFileName();
+		private IniConfiguration _configuration;
+		private IniConfiguration _blankConfiguration;
+	    private readonly string _tempPath = Path.GetTempFileName();
 
 		private string OriginalAssemblyLocation
 		{
@@ -28,20 +29,20 @@ namespace Mail.Library.Test.Configuration
 		[TestFixtureSetUp]
 		public void Setup()
 		{
-			System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+			Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
 			string path = Path.Combine(OriginalAssemblyLocation, @"Configuration\config.ini");
-			configuration = new IniConfiguration(path, "General");
-			configuration.Parse();
-			blankConfiguration = new IniConfiguration();
+			_configuration = new IniConfiguration(path, "General");
+			_configuration.Parse();
+			_blankConfiguration = new IniConfiguration();
 		}
 
         [TestFixtureTearDown]
 	    public void Finish()
 	    {
-	        if (string.IsNullOrEmpty(tempPath)) return;
+	        if (string.IsNullOrEmpty(_tempPath)) return;
             try
             {
-                File.Delete(tempPath);
+                File.Delete(_tempPath);
             }
             catch (IOException)
             { }
@@ -50,26 +51,26 @@ namespace Mail.Library.Test.Configuration
 		[Test]
 		public void GetWithMetadataTest()
 		{
-			var config1 = configuration.GetConfig<Metadata>();
+			var config1 = _configuration.GetConfig<Metadata>();
 			Assert.That(config1.Position, Is.EqualTo(2.3));
 			Assert.That(config1.NotFound, Is.True);
 			Assert.That(config1.NotFound2, Is.True);
 			Assert.That(config1.NotFound3, Is.EqualTo(default(int?)));
 			Assert.That(config1.NotFound4, Is.EqualTo(default(decimal)));
 
-			var config2 = configuration.GetConfig<Library>();
+			var config2 = _configuration.GetConfig<Library>();
 			Assert.That(config2.Sender, Is.EqualTo("MailKit"));
 			Assert.That(config2.Reader, Is.EqualTo("builtin"));
             Assert.That(config2.Dummy, Is.EqualTo(null));
 
-			var config3 = blankConfiguration.GetConfig<Metadata>();
+			var config3 = _blankConfiguration.GetConfig<Metadata>();
 			Assert.That(config3.Position, Is.EqualTo(-1d));
 			Assert.That(config3.NotFound, Is.True);
 			Assert.That(config3.NotFound2, Is.True);
 			Assert.That(config3.NotFound3, Is.EqualTo(default(int?)));
 			Assert.That(config3.NotFound4, Is.EqualTo(default(decimal)));
 
-			var config4 = blankConfiguration.GetConfig<Library>();
+			var config4 = _blankConfiguration.GetConfig<Library>();
 			Assert.That(config4.Sender, Is.EqualTo("default"));
 			Assert.That(config4.Reader, Is.EqualTo(default(string)));
 		}
@@ -77,22 +78,22 @@ namespace Mail.Library.Test.Configuration
 		[Test]
 		public void GetWithStringTest()
 		{
-			Assert.That(configuration.GetConfig<string>("Key1"), Is.EqualTo("value1"));
-			Assert.That(configuration.GetConfig<int>("Key2"), Is.EqualTo(12));
-			Assert.That(configuration.GetConfig<string>("Key3"), Is.EqualTo("another 3"));
-			Assert.That(configuration.GetConfig<int>("key4"), Is.EqualTo(4));
+			Assert.That(_configuration.GetConfig<string>("Key1"), Is.EqualTo("value1"));
+			Assert.That(_configuration.GetConfig<int>("Key2"), Is.EqualTo(12));
+			Assert.That(_configuration.GetConfig<string>("Key3"), Is.EqualTo("another 3"));
+			Assert.That(_configuration.GetConfig<int>("key4"), Is.EqualTo(4));
 
-			Assert.That(configuration.GetConfig<string>("mailer", "sender"), Is.EqualTo("MailKit"));
-			Assert.That(configuration.GetConfig<string>("mailer", "reader"), Is.EqualTo("builtin"));
-			Assert.That(configuration.GetConfig<decimal>("another section", "position"), Is.EqualTo(2.3m));
-			Assert.That(configuration.GetConfig<string>("another section", "hello"), Is.EqualTo("world"));
-			Assert.That(configuration.GetConfig<string>("another section", "foo"), Is.EqualTo("bar"));
+			Assert.That(_configuration.GetConfig<string>("mailer", "sender"), Is.EqualTo("MailKit"));
+			Assert.That(_configuration.GetConfig<string>("mailer", "reader"), Is.EqualTo("builtin"));
+			Assert.That(_configuration.GetConfig<decimal>("another section", "position"), Is.EqualTo(2.3m));
+			Assert.That(_configuration.GetConfig<string>("another section", "hello"), Is.EqualTo("world"));
+			Assert.That(_configuration.GetConfig<string>("another section", "foo"), Is.EqualTo("bar"));
 		}
 
 		[Test]
 		public void SetWithMetadataTest()
 		{
-			var file = new IniConfiguration(configuration.Path);
+			var file = new IniConfiguration(_configuration.Path);
 			var config1 = new Metadata();
 			IniConfiguration.SetDefault(config1);
 			config1.Position = 50;
@@ -109,7 +110,7 @@ namespace Mail.Library.Test.Configuration
 		[Test]
 		public void SetWithStringTest()
 		{
-			var file = new IniConfiguration(configuration.Path);
+			var file = new IniConfiguration(_configuration.Path);
 			file.Parse();
 			file.SetConfig("key1", "value1_1");
 			file.SetConfig("Key3", "33");
@@ -122,7 +123,7 @@ namespace Mail.Library.Test.Configuration
         [Test]
 	    public void DumpTest()
 	    {
-	        var file = new IniConfiguration(configuration.Path);
+	        var file = new IniConfiguration(_configuration.Path);
             file.Parse();
             var config1 = file.GetConfig<Metadata>();
             config1.NotFound3 = 100;
@@ -130,8 +131,8 @@ namespace Mail.Library.Test.Configuration
             config1.NotFound4 = 250m;
             file.SetConfig(config1);
             file.SetConfig("New Section", "new key", "new value");
-            file.Write(tempPath, true);
-            file.Path = tempPath;
+            file.Write(_tempPath, true);
+            file.Path = _tempPath;
             file.Parse();
 
             config1 = file.GetConfig<Metadata>();

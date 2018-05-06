@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Globalization;
 
 namespace Mail.Library
@@ -46,38 +47,38 @@ namespace Mail.Library
 			if (type == typeof(string)) return value;
 			if (type == typeof(bool?) || type == typeof(bool))
 			{
-				bool? output = ToBoolean(value, (bool?)defaultValue);
+				var output = ToBoolean(value, (bool?)defaultValue);
 				if (type == typeof(bool?)) return output;
 				return output.HasValue ? output.Value : Convert.ToBoolean(defaultValue);
 			}
 			if (type == typeof(decimal?) || type == typeof(decimal))
 			{
-				decimal? output = ToDecimal(value, defaultValue as decimal?);
+				var output = ToDecimal(value, defaultValue as decimal?);
 				if (type == typeof(decimal?)) return output;
 				return output.HasValue ? output.Value : Convert.ToDecimal(defaultValue);
 			}
 			if (type == typeof(double?) || type == typeof(double))
 			{
-				double? output = ToDouble(value, defaultValue as double?);
+				var output = ToDouble(value, defaultValue as double?);
 				if (type == typeof(double?)) return output;
 				return output.HasValue ? output.Value : Convert.ToDouble(defaultValue);
 			}
 			if (type == typeof(int?) || type == typeof(int))
 			{
-				int? output = ToInteger(value, defaultValue as int?);
+				var output = ToInteger(value, defaultValue as int?);
 				if (type == typeof(int?)) return output;
 				return output.HasValue ? output.Value : Convert.ToInt32(defaultValue);
 			}
 		    if (type.IsEnum || (Nullable.GetUnderlyingType(type) != null && Nullable.GetUnderlyingType(type).IsEnum))
 		    {
-		        Type realType = Nullable.GetUnderlyingType(type) ?? type;
+		        var realType = Nullable.GetUnderlyingType(type) ?? type;
 		        bool isNullable = realType != type;
 		        try
 		        {
 		            var output = Enum.Parse(realType, value, true);
 		            return !isNullable
 		                ? output
-		                : System.ComponentModel.TypeDescriptor.GetConverter(type).ConvertFrom(output);
+		                : TypeDescriptor.GetConverter(type).ConvertFrom(output);
 		        }
 		        catch (Exception exception) when (exception is OverflowException || exception is ArgumentException) 
 		        {

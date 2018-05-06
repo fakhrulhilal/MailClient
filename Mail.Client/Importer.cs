@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Mail.Library;
@@ -24,7 +25,7 @@ namespace Mail.Client
 		{
 			var aggregateCatalog = new AggregateCatalog();
 			aggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(IPluginMetadata).Assembly));
-			string location = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
+			string location = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
 			aggregateCatalog.Catalogs.Add(new DirectoryCatalog(location, @"Mail.Plugin.*.dll"));
 			var container = new CompositionContainer(aggregateCatalog);
 			try

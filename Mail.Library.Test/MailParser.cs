@@ -11,7 +11,7 @@ namespace Mail.Library.Test
 			if (messages == null || messages.Length < 1) throw new ArgumentNullException(nameof(messages));
 			return 
 				(from message in messages
-				let date = System.DateTime.Parse(message.Headers["Date"])
+				let date = DateTime.Parse(message.Headers["Date"])
 				orderby date descending
 				select message).FirstOrDefault();
 		}

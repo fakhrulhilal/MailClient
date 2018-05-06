@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Mail;
 
 namespace Mail.Library
@@ -98,7 +99,7 @@ namespace Mail.Library
 				Body = Body,
 				IsBodyHtml = UseHtml
 			};
-			System.Action<MailAddressCollection, string, string> add = (collection, email, display) =>
+			Action<MailAddressCollection, string, string> add = (collection, email, display) =>
 				collection.Add(!string.IsNullOrEmpty(display)
 					? new MailAddress(email, display)
 					: new MailAddress(email));

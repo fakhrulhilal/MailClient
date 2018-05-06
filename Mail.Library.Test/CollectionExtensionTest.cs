@@ -9,13 +9,6 @@ namespace Mail.Library.Test
 	public class CollectionExtensionTest
 	{
 		[Test]
-		[TestCaseSource(nameof(SimpleSource), Category = "Collection")]
-		public IEnumerable<string> SimpleCollectionTest(IEnumerable<string> collection)
-		{
-			return collection.Unique();
-		}
-
-		[Test]
 		[TestCaseSource(nameof(ComplexSource), Category = "Collection")]
 		public Complex[] ComplexCollectionTest(IEnumerable<Complex> collection)
 		{
@@ -23,28 +16,34 @@ namespace Mail.Library.Test
 			return r;
 		}
 
+		[Test]
+		[TestCaseSource(nameof(SimpleSource), Category = "Collection")]
+		public IEnumerable<string> SimpleCollectionTest(IEnumerable<string> collection) => collection.Unique();
+
+		#region non test
+
 		public static IEnumerable SimpleSource
 		{
 			get
 			{
 				yield return new TestCaseData(new List<string> { "one", "One", "Two", "TWO", "three" })
-					.Returns(new[] { "One", "TWO", "three" })
-					.SetName("Simple_Duplicate");
+							 .Returns(new[] { "One", "TWO", "three" })
+							 .SetName("Simple_Duplicate");
 				yield return new TestCaseData(new List<string> { "one", "Two", "three" })
-					.Returns(new[] { "one", "Two", "three" })
-					.SetName("Simple_NoDuplicate");
+							 .Returns(new[] { "one", "Two", "three" })
+							 .SetName("Simple_NoDuplicate");
 				yield return new TestCaseData(new List<string> { "one", "  ", "Two", "", "three" })
-					.Returns(new[] { "one", "Two", "three" })
-					.SetName("Simple_ContainEmptyElement");
+							 .Returns(new[] { "one", "Two", "three" })
+							 .SetName("Simple_ContainEmptyElement");
 				yield return new TestCaseData(new List<string> { "one", null, "Two", "three" })
-					.Returns(new[] { "one", "Two", "three" })
-					.SetName("Simple_ContainNullElement");
+							 .Returns(new[] { "one", "Two", "three" })
+							 .SetName("Simple_ContainNullElement");
 				yield return new TestCaseData(new List<string> { "one", null, "Two", "three", "another", "Another   " })
-					.Returns(new[] { "one", "Two", "three", "Another   " })
-					.SetName("Simple_ContainSpace");
+							 .Returns(new[] { "one", "Two", "three", "Another   " })
+							 .SetName("Simple_ContainSpace");
 				yield return new TestCaseData(new List<string> { "one", null, "Two", "three", "another", "\tAnother   " })
-					.Returns(new[] { "one", "Two", "three", "\tAnother   " })
-					.SetName("Simple_ContainWhiteSpace");
+							 .Returns(new[] { "one", "Two", "three", "\tAnother   " })
+							 .SetName("Simple_ContainWhiteSpace");
 			}
 		}
 
@@ -52,24 +51,76 @@ namespace Mail.Library.Test
 		{
 			get
 			{
-				yield return new TestCaseData(new List<Complex> { new Complex { Name = "one", Value = "Dummy" }, new Complex { Name = "One", Value = "Dummy" }, new Complex { Name = "Two", Value = "Dummy" }, new Complex { Name = "TWO", Value = "Dummy" }, new Complex { Name = "three", Value = "Dummy" } })
-					.Returns(new[] { new Complex { Name = "One", Value = "Dummy" }, new Complex { Name = "TWO", Value = "Dummy" }, new Complex { Name = "three", Value = "Dummy" } })
-					.SetName("Complex_Duplicate");
-				yield return new TestCaseData(new List<Complex> { new Complex { Name = "one", Value = "Dummy" }, new Complex { Name = "Two", Value = "Dummy" }, new Complex { Name = "three", Value = "Dummy" } })
-					.Returns(new[] { new Complex { Name = "one", Value = "Dummy" }, new Complex { Name = "Two", Value = "Dummy" }, new Complex { Name = "three", Value = "Dummy" } })
-					.SetName("Complex_NoDuplicate");
-				yield return new TestCaseData(new List<Complex> { new Complex { Name = "one", Value = "Dummy" }, new Complex { Name = "  ", Value = "Dummy" }, new Complex { Name = "Two", Value = "Dummy" }, new Complex { Name = "three", Value = "Dummy" } })
-					.Returns(new[] { new Complex { Name = "one", Value = "Dummy" }, new Complex { Name = "Two", Value = "Dummy" }, new Complex { Name = "three", Value = "Dummy" } })
-					.SetName("Complex_ContainEmptyElement");
-				yield return new TestCaseData(new List<Complex> { new Complex { Name = "one", Value = "Dummy" }, new Complex { Name = null, Value = "Dummy" }, new Complex { Name = "Two", Value = "Dummy" }, new Complex { Name = "three", Value = "Dummy" } })
-					.Returns(new[] { new Complex { Name = "one", Value = "Dummy" }, new Complex { Name = "Two", Value = "Dummy" }, new Complex { Name = "three", Value = "Dummy" } })
-					.SetName("Complex_ContainNullElement");
-				yield return new TestCaseData(new List<Complex> { new Complex { Name = "one", Value = "Dummy" }, new Complex { Name = null, Value = "Dummy" }, new Complex { Name = "Two", Value = "Dummy" }, new Complex { Name = "three", Value = "Dummy" }, new Complex { Name = "another", Value = "Dummy" }, new Complex { Name = "Another   ", Value = "Dummy" } })
-					.Returns(new[] { new Complex { Name = "one", Value = "Dummy" }, new Complex { Name = "Two", Value = "Dummy" }, new Complex { Name = "three", Value = "Dummy" }, new Complex { Name = "Another   ", Value = "Dummy" } })
-					.SetName("Complex_ContainSpace");
-				yield return new TestCaseData(new List<Complex> { new Complex { Name = "one", Value = "Dummy" }, new Complex { Name = null, Value = "Dummy" }, new Complex { Name = "Two", Value = "Dummy" }, new Complex { Name = "three", Value = "Dummy" }, new Complex { Name = "another", Value = "Dummy" }, new Complex { Name = "\tAnother   ", Value = "Dummy" } })
-					.Returns(new[] { new Complex { Name = "one", Value = "Dummy" }, new Complex { Name = "Two", Value = "Dummy" }, new Complex { Name = "three", Value = "Dummy" }, new Complex { Name = "\tAnother   ", Value = "Dummy" } })
-					.SetName("Complex_ContainWhiteSpace");
+				yield return new TestCaseData(new List<Complex>
+				{
+					new Complex { Name = "one", Value = "Dummy" },
+					new Complex { Name = "One", Value = "Dummy" },
+					new Complex { Name = "Two", Value = "Dummy" },
+					new Complex { Name = "TWO", Value = "Dummy" },
+					new Complex { Name = "three", Value = "Dummy" }
+				}).Returns(new[]
+				{
+					new Complex { Name = "One", Value = "Dummy" }, new Complex { Name = "TWO", Value = "Dummy" },
+					new Complex { Name = "three", Value = "Dummy" }
+				}).SetName("Complex_Duplicate");
+				yield return new TestCaseData(new List<Complex>
+				{
+					new Complex { Name = "one", Value = "Dummy" },
+					new Complex { Name = "Two", Value = "Dummy" },
+					new Complex { Name = "three", Value = "Dummy" }
+				}).Returns(new[]
+				{
+					new Complex { Name = "one", Value = "Dummy" }, new Complex { Name = "Two", Value = "Dummy" },
+					new Complex { Name = "three", Value = "Dummy" }
+				}).SetName("Complex_NoDuplicate");
+				yield return new TestCaseData(new List<Complex>
+				{
+					new Complex { Name = "one", Value = "Dummy" },
+					new Complex { Name = "  ", Value = "Dummy" },
+					new Complex { Name = "Two", Value = "Dummy" },
+					new Complex { Name = "three", Value = "Dummy" }
+				}).Returns(new[]
+				{
+					new Complex { Name = "one", Value = "Dummy" }, new Complex { Name = "Two", Value = "Dummy" },
+					new Complex { Name = "three", Value = "Dummy" }
+				}).SetName("Complex_ContainEmptyElement");
+				yield return new TestCaseData(new List<Complex>
+				{
+					new Complex { Name = "one", Value = "Dummy" },
+					new Complex { Name = null, Value = "Dummy" },
+					new Complex { Name = "Two", Value = "Dummy" },
+					new Complex { Name = "three", Value = "Dummy" }
+				}).Returns(new[]
+				{
+					new Complex { Name = "one", Value = "Dummy" }, new Complex { Name = "Two", Value = "Dummy" },
+					new Complex { Name = "three", Value = "Dummy" }
+				}).SetName("Complex_ContainNullElement");
+				yield return new TestCaseData(new List<Complex>
+				{
+					new Complex { Name = "one", Value = "Dummy" },
+					new Complex { Name = null, Value = "Dummy" },
+					new Complex { Name = "Two", Value = "Dummy" },
+					new Complex { Name = "three", Value = "Dummy" },
+					new Complex { Name = "another", Value = "Dummy" },
+					new Complex { Name = "Another   ", Value = "Dummy" }
+				}).Returns(new[]
+				{
+					new Complex { Name = "one", Value = "Dummy" }, new Complex { Name = "Two", Value = "Dummy" },
+					new Complex { Name = "three", Value = "Dummy" }, new Complex { Name = "Another   ", Value = "Dummy" }
+				}).SetName("Complex_ContainSpace");
+				yield return new TestCaseData(new List<Complex>
+				{
+					new Complex { Name = "one", Value = "Dummy" },
+					new Complex { Name = null, Value = "Dummy" },
+					new Complex { Name = "Two", Value = "Dummy" },
+					new Complex { Name = "three", Value = "Dummy" },
+					new Complex { Name = "another", Value = "Dummy" },
+					new Complex { Name = "\tAnother   ", Value = "Dummy" }
+				}).Returns(new[]
+				{
+					new Complex { Name = "one", Value = "Dummy" }, new Complex { Name = "Two", Value = "Dummy" },
+					new Complex { Name = "three", Value = "Dummy" }, new Complex { Name = "\tAnother   ", Value = "Dummy" }
+				}).SetName("Complex_ContainWhiteSpace");
 			}
 		}
 
@@ -85,15 +136,11 @@ namespace Mail.Library.Test
 				return Name == comparer.Name && Value == comparer.Value;
 			}
 
-			public override int GetHashCode()
-			{
-				return ToString().GetHashCode();
-			}
+			public override int GetHashCode() => ToString().GetHashCode();
 
-			public override string ToString()
-			{
-				return $"{Name} - {Value}";
-            }
+			public override string ToString() => $"{Name} - {Value}";
 		}
+
+		#endregion
 	}
 }

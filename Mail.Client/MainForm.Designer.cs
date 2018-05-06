@@ -1,11 +1,14 @@
-﻿namespace Mail.Client
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Mail.Client
 {
 	partial class MainForm
 	{
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.IContainer components = null;
+		private IContainer components = null;
 
 		/// <summary>
 		/// Clean up any resources being used.
@@ -394,36 +397,36 @@
 		}
 
 		#endregion
-		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.Label label11;
-		private System.Windows.Forms.TextBox txtBlindCarbonCopy;
-		private System.Windows.Forms.Label label10;
-		private System.Windows.Forms.TextBox txtCarbonCopy;
-		private System.Windows.Forms.RichTextBox txtMessage;
-		private System.Windows.Forms.Button btnSend;
-		private System.Windows.Forms.TextBox txtSubject;
-		private System.Windows.Forms.Label label8;
-		private System.Windows.Forms.Label label7;
-		private System.Windows.Forms.Label label6;
-		private System.Windows.Forms.TextBox txtTo;
-		private System.Windows.Forms.Button btnDeleteAttachment;
-		private System.Windows.Forms.Button btnAddAttachment;
-		private System.Windows.Forms.Label label12;
-		private System.Windows.Forms.ListView listAttachment;
-		private System.Windows.Forms.GroupBox groupBox2;
-		private System.Windows.Forms.TextBox txtAddress;
-		private System.Windows.Forms.Label label9;
-		private System.Windows.Forms.NumericUpDown nudPort;
-		private System.Windows.Forms.TextBox txtServer;
-		private System.Windows.Forms.TextBox txtPassword;
-		private System.Windows.Forms.TextBox txtUsername;
-		private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.CheckBox chkSecure;
-        private System.Windows.Forms.Button btnSave;
+		private GroupBox groupBox1;
+		private Label label11;
+		private TextBox txtBlindCarbonCopy;
+		private Label label10;
+		private TextBox txtCarbonCopy;
+		private RichTextBox txtMessage;
+		private Button btnSend;
+		private TextBox txtSubject;
+		private Label label8;
+		private Label label7;
+		private Label label6;
+		private TextBox txtTo;
+		private Button btnDeleteAttachment;
+		private Button btnAddAttachment;
+		private Label label12;
+		private ListView listAttachment;
+		private GroupBox groupBox2;
+		private TextBox txtAddress;
+		private Label label9;
+		private NumericUpDown nudPort;
+		private TextBox txtServer;
+		private TextBox txtPassword;
+		private TextBox txtUsername;
+		private Label label5;
+		private Label label4;
+		private Label label3;
+		private Label label2;
+		private Label label1;
+        private CheckBox chkSecure;
+        private Button btnSave;
     }
 }
 

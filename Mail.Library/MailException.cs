@@ -1,9 +1,11 @@
-﻿namespace Mail.Library
+﻿using System;
+
+namespace Mail.Library
 {
 	/// <summary>
 	/// General exception for mail operation
 	/// </summary>
-	public class MailException : System.Exception
+	public class MailException : Exception
 	{
 		/// <summary>
 		/// Initialize exception with message only
@@ -17,7 +19,7 @@
 		/// </summary>
 		/// <param name="message">Exception message</param>
 		/// <param name="innerException">Inner exception</param>
-		public MailException(string message, System.Exception innerException) : base(message, innerException)
+		public MailException(string message, Exception innerException) : base(message, innerException)
 		{ }
 	}
 }
