@@ -48,8 +48,7 @@ namespace Mail.Library.Test
 		[TestCaseSource(nameof(SendingSource), Category = "MailSender")]
 		public bool SendTest(Message message)
 		{
-			string errorMessage;
-			if (_client.Send(_connection, message, out errorMessage))
+			if (_client.Send(_connection, message, out string errorMessage))
 			{
 				Assert.That(_server.ReceivedEmailCount, Is.GreaterThanOrEqualTo(1));
 				var lastMessage = _server.ReceivedEmail.LastMessage();
