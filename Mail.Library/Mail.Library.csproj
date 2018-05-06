@@ -41,6 +41,9 @@
     <Reference Include="System.Security" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Misc\SharedAssemblyInfo.cs">
+      <Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Address.cs" />
     <Compile Include="AddressCollection.cs" />
     <Compile Include="Attachment.cs" />

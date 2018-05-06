@@ -46,6 +46,9 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Misc\SharedAssemblyInfo.cs">
+      <Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Configuration\Library.cs" />
     <Compile Include="Configuration\SendingConnection.cs" />
     <Compile Include="Configuration\SendingTemplate.cs" />
