@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace Mail.Library.Test
 {
 	[TestFixture]
-	class AttributeHelperTest
+	internal class AttributeHelperTest
 	{
 		[Test]
 		public void ClassTest()
@@ -30,11 +30,15 @@ namespace Mail.Library.Test
 		[Test]
 		public void MemberTest()
 		{
-			var memberNames = AttributeHelper.Member<ClassWithAttribute, MemberMultipleAttribute, string>(@class => @class.Data, attr => attr.Key);
+			var memberNames =
+				AttributeHelper.Member<ClassWithAttribute, MemberMultipleAttribute, string>(@class => @class.Data,
+					attr => attr.Key);
 			Assert.That(memberNames.Length, Is.EqualTo(2));
 			Assert.That(memberNames, Is.EquivalentTo(new[] { "10", default(string) }));
 
-			var memberNumbers = AttributeHelper.Member<ClassWithAttribute, MemberMultipleAttribute, double>(@class => @class.Data, attr => attr.Value);
+			var memberNumbers =
+				AttributeHelper.Member<ClassWithAttribute, MemberMultipleAttribute, double>(@class => @class.Data,
+					attr => attr.Value);
 			Assert.That(memberNumbers.Length, Is.EqualTo(2));
 			Assert.That(memberNumbers, Is.EquivalentTo(new[] { 10d, 5d }));
 
@@ -48,12 +52,12 @@ namespace Mail.Library.Test
 			Assert.That(memberNumbers, Is.EquivalentTo(new[] { 10d, 5d }));
 		}
 
-		#region Attribute definition
+		#region non test
 
 		[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 		internal class ClassMultipleAttribute : Attribute
 		{
-			public string Name { get; private set; }
+			public string Name { get; }
 			public int Number { get; set; }
 
 			public ClassMultipleAttribute(string name)
@@ -63,7 +67,7 @@ namespace Mail.Library.Test
 			}
 		}
 
-		[AttributeUsage(AttributeTargets.Field|AttributeTargets.Property, AllowMultiple = true)]
+		[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
 		internal class MemberMultipleAttribute : Attribute
 		{
 			public double Value { get; set; }
@@ -75,14 +79,12 @@ namespace Mail.Library.Test
 			}
 		}
 
-		#endregion
-
-		#region Class definition
-
-		[ClassMultiple("dummy", Number = 2), ClassMultiple("dummy2")]
+		[ClassMultiple("dummy", Number = 2)]
+		[ClassMultiple("dummy2")]
 		internal class ClassWithAttribute
 		{
-			[MemberMultiple(10d, Key = "10"), MemberMultiple(5d)]
+			[MemberMultiple(10d, Key = "10")]
+			[MemberMultiple(5d)]
 			public string Data { get; set; }
 		}
 

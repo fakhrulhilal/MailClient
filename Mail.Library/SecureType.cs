@@ -1,11 +1,12 @@
-﻿using System.Security.Authentication;
+﻿using System;
+using System.Security.Authentication;
 
 namespace Mail.Library
 {
 	/// <summary>
 	/// Secure connection type
 	/// </summary>
-	[System.Flags]
+	[Flags]
 	public enum SecureType
     {
 		/// <summary>

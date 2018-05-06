@@ -8,113 +8,115 @@ using NUnit.Framework;
 
 namespace Mail.Library.Test
 {
-    [TestFixture]
-    class MicrosoftClientTest
-    {
-        private SimpleSmtpServer server;
-        private IMailSender client;
-        private SendConnection connection;
-	    private List<Attachment> files = new List<Attachment>();
-
-	    [TestFixtureSetUp]
-        public void SetUp()
-        {
-            server = SimpleSmtpServer.Start(2525);
-            client = new MicrosoftClient();
-            connection = new SendConnection("localhost", server.Port);
-        }
+	[TestFixture]
+	internal class MicrosoftClientTest
+	{
+		[TestFixtureSetUp]
+		public void SetUp()
+		{
+			_server = SimpleSmtpServer.Start(2525);
+			_client = new MicrosoftClient();
+			_connection = new SendConnection("localhost", _server.Port);
+		}
 
 		[SetUp]
-	    public void TestSetUp()
-	    {
-		    files.Clear();
-	    }
+		public void TestSetUp()
+		{
+			_files.Clear();
+		}
 
-        [TestFixtureTearDown]
-        public void Finish()
-        {
-            server.Stop();
-        }
+		[TestFixtureTearDown]
+		public void Finish()
+		{
+			_server.Stop();
+		}
 
 		[TearDown]
-	    public void TestFinish()
-	    {
-			foreach (var file in files.Where(f => !string.IsNullOrEmpty(f.Path) && File.Exists(f.Path)))
-			{
+		public void TestFinish()
+		{
+			foreach (var file in _files.Where(f => !string.IsNullOrEmpty(f.Path) && File.Exists(f.Path)))
 				try
 				{
 					File.Delete(file.Path);
 				}
 				catch (IOException)
-				{ }
-			}
+				{
+				}
 		}
 
 		[Test]
 		[TestCaseSource(nameof(SendingSource), Category = "MailSender")]
-        public bool SendTest(Message message)
-        {
-            string errorMessage;
-	        if (client.Send(connection, message, out errorMessage))
-	        {
-				Assert.That(server.ReceivedEmailCount, Is.GreaterThanOrEqualTo(1));
-		        var lastMessage = server.ReceivedEmail.LastMessage();
+		public bool SendTest(Message message)
+		{
+			string errorMessage;
+			if (_client.Send(_connection, message, out errorMessage))
+			{
+				Assert.That(_server.ReceivedEmailCount, Is.GreaterThanOrEqualTo(1));
+				var lastMessage = _server.ReceivedEmail.LastMessage();
 				Assert.IsNotNull(lastMessage);
 				Assert.That(lastMessage.Body(), Is.EqualTo(message.Body));
 				Assert.That(lastMessage.Subject(), Is.EqualTo(message.Subject));
 				Assert.That(lastMessage.FromAddress.Address, Is.EqualTo(message.Sender.Email));
 				return true;
-	        }
+			}
 
 			Assert.That(errorMessage, Is.Not.Null.Or.Empty);
-	        return false;
-        }
+			return false;
+		}
 
-	    private void GenerateAttachments()
-	    {
+		#region non test
+
+		private SimpleSmtpServer _server;
+		private IMailSender _client;
+		private SendConnection _connection;
+		private readonly List<Attachment> _files = new List<Attachment>();
+
+		private void GenerateAttachments()
+		{
 			var random = new Random();
-		    for (int i = 0, total = random.Next(1, 5); i < total; i++)
-		    {
-			    string tempFileName = Path.GetTempFileName();
+			for (int i = 0, total = random.Next(1, 5); i < total; i++)
+			{
+				string tempFileName = Path.GetTempFileName();
 				File.WriteAllText(tempFileName, Default.Text);
-			    files.Add(new Attachment
-			    {
-				    Path = tempFileName,
+				_files.Add(new Attachment
+				{
+					Path = tempFileName,
 					MimeType = "text/plain"
-			    });
-		    }
-	    }
+				});
+			}
+		}
 
-	    IEnumerable SendingSource
-	    {
-		    get
-		    {
-			    yield return new TestCaseData(new Message
-			    {
-				    Body = Default.Body,
+		private IEnumerable SendingSource
+		{
+			// ReSharper disable once UnusedMember.Local - called by NUnit
+			get
+			{
+				yield return new TestCaseData(new Message
+				{
+					Body = Default.Body,
 					Subject = Default.Subject,
 					Sender = Default.Sender,
 					To = new AddressCollection(Default.Email)
-			    }).SetName("BuiltIn_MinimumMessage").Returns(true);
-			    yield return new TestCaseData(new Message
-			    {
-				    Body = Default.Body,
+				}).SetName("BuiltIn_MinimumMessage").Returns(true);
+				yield return new TestCaseData(new Message
+				{
+					Body = Default.Body,
 					Subject = Default.Subject,
 					Sender = Default.Sender
-			    }).SetName("BuiltIn_WithoutDestination").Returns(false);
-			    yield return new TestCaseData(new Message
-			    {
+				}).SetName("BuiltIn_WithoutDestination").Returns(false);
+				yield return new TestCaseData(new Message
+				{
 					Subject = Default.Subject,
 					Sender = Default.Sender,
 					To = new AddressCollection(Default.Email)
-			    }).SetName("BuiltIn_WithoutBody").Returns(false);
-			    yield return new TestCaseData(new Message
-			    {
+				}).SetName("BuiltIn_WithoutBody").Returns(false);
+				yield return new TestCaseData(new Message
+				{
 					Body = string.Empty,
 					Subject = Default.Subject,
 					Sender = Default.Sender,
 					To = new AddressCollection(Default.Email)
-			    }).SetName("BuiltIn_EmptyBody").Returns(false);
+				}).SetName("BuiltIn_EmptyBody").Returns(false);
 				yield return new TestCaseData(new Message
 				{
 					Body = Default.Body,
@@ -122,25 +124,27 @@ namespace Mail.Library.Test
 					To = new AddressCollection(Default.Email)
 				}).SetName("BuiltIn_WithoutSender").Returns(false);
 				GenerateAttachments();
-			    var message = new Message
-			    {
-				    Body = Default.Body,
-				    Subject = Default.Subject,
-				    Sender = Default.Sender,
-				    To = new AddressCollection(Default.Email)
-			    };
-				files.ForEach(file => message.Attachments.Add(file));
-			    yield return new TestCaseData(message).SetName("BuiltIn_WithAttachments").Returns(true);
-		    }
+				var message = new Message
+				{
+					Body = Default.Body,
+					Subject = Default.Subject,
+					Sender = Default.Sender,
+					To = new AddressCollection(Default.Email)
+				};
+				_files.ForEach(file => message.Attachments.Add(file));
+				yield return new TestCaseData(message).SetName("BuiltIn_WithAttachments").Returns(true);
+			}
 		}
 
-	    private static class Default
-	    {
-		    public static readonly Address Sender = new Address("sender@domain.com");
-		    public static readonly string Email = "email@domain.com";
-		    public static readonly string Subject = "Default subject";
-		    public static readonly string Body = "Default body";
-		    public static string Text = "Dummy test";
-	    }
-    }
+		private static class Default
+		{
+			public static readonly Address Sender = new Address("sender@domain.com");
+			public static readonly string Email = "email@domain.com";
+			public static readonly string Subject = "Default subject";
+			public static readonly string Body = "Default body";
+			public static readonly string Text = "Dummy test";
+		}
+
+		#endregion
+	}
 }

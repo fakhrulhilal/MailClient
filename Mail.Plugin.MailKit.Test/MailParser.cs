@@ -9,11 +9,11 @@ namespace Mail.Plugin.MailKit.Test
 		internal static SmtpMessage LastMessage(this SmtpMessage[] messages)
 		{
 			if (messages == null || messages.Length < 1) throw new ArgumentNullException(nameof(messages));
-			return 
+			return
 				(from message in messages
-				let date = System.DateTime.Parse(message.Headers["Date"])
-				orderby date descending
-				select message).FirstOrDefault();
+				 let date = DateTime.Parse(message.Headers["Date"])
+				 orderby date descending
+				 select message).FirstOrDefault();
 		}
 
 		internal static string Body(this SmtpMessage message)

@@ -13,7 +13,7 @@ namespace Mail.Library
 	[ExportMetadata("Name", "BuiltIn")]
 	public class MicrosoftClient : IMailSender, IPluginMetadata, IDisposable
 	{
-		private SmtpClient client;
+		private SmtpClient _client;
 
 		public string Name => "BuiltIn";
 		public string Version => "0.1.0";
@@ -38,22 +38,22 @@ namespace Mail.Library
 		        return false;
 	        }
 
-			using (client = new SmtpClient(connection.Server, connection.Port))
+			using (_client = new SmtpClient(connection.Server, connection.Port))
 			using (var mail = ((IComposable<MailMessage>)message).Compose())
 			{
 				try
 				{
 					//enable SSL untuk semua jenis security, baik SSL maupun TLS
-					client.EnableSsl = connection.Security != SecureType.None;
+					_client.EnableSsl = connection.Security != SecureType.None;
 
 					// login using specified username and password
 					if (!string.IsNullOrEmpty(connection.Username) && !string.IsNullOrEmpty(connection.Password))
 					{
-						client.UseDefaultCredentials = false;
-						client.Credentials = new NetworkCredential(connection.Username, connection.Password);
+						_client.UseDefaultCredentials = false;
+						_client.Credentials = new NetworkCredential(connection.Username, connection.Password);
 					}
 
-					client.Send(mail);
+					_client.Send(mail);
 					return true;
 				}
 				catch (SmtpException exception)
@@ -66,10 +66,10 @@ namespace Mail.Library
 
 		void IDisposable.Dispose()
 		{
-			if (client != null)
+			if (_client != null)
 			{
-				client.Dispose();
-				client = null;
+				_client.Dispose();
+				_client = null;
 			}
 
 			GC.SuppressFinalize(this);

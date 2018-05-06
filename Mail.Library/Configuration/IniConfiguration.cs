@@ -27,7 +27,7 @@ namespace Mail.Library.Configuration
         /// <summary>
         /// All configurations
         /// </summary>
-        private List<IniBase> configurations = new List<IniBase>();
+        private List<IniBase> _configurations = new List<IniBase>();
 
         /// <summary>
         /// Initialize new INI configuration file
@@ -67,12 +67,12 @@ namespace Mail.Library.Configuration
         {
             if (lines == null) throw new ArgumentNullException(nameof(lines));
             if (string.IsNullOrEmpty(DefaultSection)) throw new ArgumentNullException(nameof(DefaultSection));
-            configurations.Clear();
+            _configurations.Clear();
             if (lines.Length < 1) return;
             int lineNumber = 0;
             var output = new List<IniBase>();
             IniSection lastSection = null;
-            foreach (var line in lines)
+            foreach (string line in lines)
             {
                 lineNumber++;
                 if (string.IsNullOrEmpty(line)) continue;
@@ -126,7 +126,7 @@ namespace Mail.Library.Configuration
                 }
             }
 
-            configurations = output;
+            _configurations = output;
         }
 
         /// <summary>
@@ -160,9 +160,9 @@ namespace Mail.Library.Configuration
         {
             if (string.IsNullOrEmpty(section)) throw new ArgumentNullException(nameof(section));
             if (string.IsNullOrEmpty(key)) throw new ArgumentNullException(nameof(key));
-            if (configurations.Count < 1) return default(TValue);
+            if (_configurations.Count < 1) return default(TValue);
             var config =
-                (from cfg in configurations.OfType<IniSection>()
+                (from cfg in _configurations.OfType<IniSection>()
                  where cfg.Name.Equals(section, StringComparison.CurrentCultureIgnoreCase)
                  from pair in cfg.Pairs
                  where pair.Key.Equals(key, StringComparison.CurrentCultureIgnoreCase)
@@ -192,13 +192,13 @@ namespace Mail.Library.Configuration
             var sectionType = config.GetType();
             string sectionName = AttributeHelper.Class<TSection, IniSectionAttribute, string>(attr => attr.Name).FirstOrDefault() ??
                                  sectionType.Name;
-            var section = configurations.OfType<IniSection>()
+            var section = _configurations.OfType<IniSection>()
                 .FirstOrDefault(cfg => cfg.Name.Equals(sectionName, StringComparison.CurrentCultureIgnoreCase));
             var properties = ExtractProperties(sectionType);
             foreach (var property in properties)
             {
                 if (!property.Info.CanWrite) continue;
-                object value = property.DefaultValue;
+                var value = property.DefaultValue;
                 var found = section?.Pairs.LastOrDefault(cfg => cfg.Key.Equals(property.Key, StringComparison.CurrentCultureIgnoreCase));
                 if (found != null) value = ConvertionHelper.To(property.Info.PropertyType, found.Value, property.DefaultValue);
                 property.Info.SetValue(config, value);
@@ -265,14 +265,14 @@ namespace Mail.Library.Configuration
         public void Write(string path, bool overwrite)
         {
             if (string.IsNullOrEmpty(path)) throw new ArgumentNullException(nameof(path));
-            if (configurations.Count < 1) return;
+            if (_configurations.Count < 1) return;
             using (var file = File.Open(
                 path,
                 overwrite ? FileMode.OpenOrCreate : FileMode.CreateNew,
                 overwrite ? FileAccess.ReadWrite : FileAccess.Write))
             {
                 file.Seek(0, SeekOrigin.Begin);
-                var configs = configurations.OrderBy(config => config.Position);
+                var configs = _configurations.OrderBy(config => config.Position);
                 foreach (var config in configs)
                 {
                     // write section or comment
@@ -313,15 +313,15 @@ namespace Mail.Library.Configuration
         {
             if (!IniLineParser.SectionRegex.IsMatch($"[{sectionName}]"))
                 throw new ArgumentException($"'{sectionName}' is not valid section name");
-            var sectionConfig = configurations.OfType<IniSection>()
+            var sectionConfig = _configurations.OfType<IniSection>()
                 .FirstOrDefault(cfg => cfg.Name.Equals(sectionName, StringComparison.CurrentCultureIgnoreCase));
             if (sectionConfig == null)
             {
                 sectionConfig = new IniSection(sectionName)
                 {
-                    Position = (configurations.Max(cfg => cfg.Position as int?) ?? 0) + 1
+                    Position = (_configurations.Max(cfg => cfg.Position as int?) ?? 0) + 1
                 };
-                configurations.Add(sectionConfig);
+                _configurations.Add(sectionConfig);
             }
 
             if (!string.IsNullOrEmpty(sectionComment)) sectionConfig.Comment = sectionComment;

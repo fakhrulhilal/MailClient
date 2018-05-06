@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using Mail.Client.Configuration;
@@ -11,75 +12,85 @@ namespace Mail.Client
 {
 	public partial class MainForm : Form
 	{
-		private readonly IMailSender mailSender;
-		private readonly IMailReader mailReader;
-	    private readonly IniConfiguration configuration;
+		private readonly IniConfiguration _configuration;
+		// ReSharper disable once NotAccessedField.Local - used for feature enhanchment
+		private readonly IMailReader _mailReader;
+		private readonly IMailSender _mailSender;
 
-	    private string MailFrom
-	    {
-	        get { return txtAddress.Text; }
-	        set { txtAddress.Text = value; }
-	    }
-
-	    private string To
-	    {
-	        get { return txtTo.Text; }
-	        set { txtTo.Text = value; }
-	    }
-
-	    private string Cc
-	    {
-	        get { return txtCarbonCopy.Text; }
-	        set { txtCarbonCopy.Text = value; }
-	    }
-
-	    private string Bcc
-	    {
-	        get { return txtBlindCarbonCopy.Text; }
-	        set { txtBlindCarbonCopy.Text = value; }
-	    }
-
-	    private string Subject
-	    {
-	        get { return txtSubject.Text; }
-	        set { txtSubject.Text = value; }
-	    }
-
-	    private string Message
-	    {
-	        get { return txtMessage.Text; }
-	        set { txtMessage.Text = value; }
-	    }
-
-	    private string Username
+		private string MailFrom
 		{
-		    get { return txtUsername.Text; }
-		    set { txtUsername.Text = value; }
+			get => txtAddress.Text;
+			set => txtAddress.Text = value;
 		}
 
-	    private string Password
-	    {
-	        get { return txtPassword.Text; }
-	        set { txtPassword.Text = value; }
-	    }
-
-	    private string Server
-	    {
-	        get { return txtServer.Text; }
-	        set { txtServer.Text = value; }
-	    }
-
-	    private int Port
+		private string To
 		{
-			get { return Convert.ToInt32(nudPort.Value); }
-			set { nudPort.Value = value; }
+			get => txtTo.Text;
+			set => txtTo.Text = value;
 		}
 
-	    private bool UseSecureConnection
-	    {
-            get { return chkSecure.Checked; }
-            set { chkSecure.Checked = value; }
-	    }
+		private string Cc
+		{
+			get => txtCarbonCopy.Text;
+			set => txtCarbonCopy.Text = value;
+		}
+
+		private string Bcc
+		{
+			get => txtBlindCarbonCopy.Text;
+			set => txtBlindCarbonCopy.Text = value;
+		}
+
+		private string Subject
+		{
+			get => txtSubject.Text;
+			set => txtSubject.Text = value;
+		}
+
+		private string Message
+		{
+			get => txtMessage.Text;
+			set => txtMessage.Text = value;
+		}
+
+		private string Username
+		{
+			get => txtUsername.Text;
+			set => txtUsername.Text = value;
+		}
+
+		private string Password
+		{
+			get => txtPassword.Text;
+			set => txtPassword.Text = value;
+		}
+
+		private string Server
+		{
+			get => txtServer.Text;
+			set => txtServer.Text = value;
+		}
+
+		private int Port
+		{
+			get => Convert.ToInt32(nudPort.Value);
+			set => nudPort.Value = value;
+		}
+
+		private bool UseSecureConnection
+		{
+			get => chkSecure.Checked;
+			set => chkSecure.Checked = value;
+		}
+
+		public MainForm(IMailSender mailSender, IMailReader mailReader, IniConfiguration configuration)
+		{
+			_configuration = configuration;
+			_mailSender = mailSender;
+			_mailReader = mailReader;
+			InitializeComponent();
+			listAttachment.ItemSelectionChanged += listAttachment_SelectedIndexChanged;
+		}
 
 		private void btnSend_Click(object sender, EventArgs e)
 		{
@@ -92,27 +103,20 @@ namespace Mail.Client
 			if (!mailValidation.IsValid) messages.AddRange(mailValidation.Messages);
 			if (messages.Any())
 			{
-				MessageBox.Show("There're errors:\n- " + string.Join("\n- ", messages), "Errors!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show("There're errors:\n- " + string.Join("\n- ", messages), "Errors!", MessageBoxButtons.OK,
+					MessageBoxIcon.Error);
 				return;
 			}
 
 			Cursor = Cursors.WaitCursor;
-			string errorMessage;
-			bool success = mailSender.Send(connection, mail, out errorMessage);
+			bool success = _mailSender.Send(connection, mail, out string errorMessage);
 			if (success)
-				MessageBox.Show("Messsage sent to " + string.Join(",", mail.To.Select(destination => destination.Email)), "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				MessageBox.Show("Messsage sent to " + string.Join(",", mail.To.Select(destination => destination.Email)), "Success",
+					MessageBoxButtons.OK, MessageBoxIcon.Information);
 			else
-				MessageBox.Show($"Failed sending message because of {errorMessage}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show($"Failed sending message because of {errorMessage}", "Error", MessageBoxButtons.OK,
+					MessageBoxIcon.Error);
 			Cursor = DefaultCursor;
-		}
-
-		public MainForm(IMailSender mailSender, IMailReader mailReader, IniConfiguration configuration)
-		{
-		    this.configuration = configuration;
-		    this.mailSender = mailSender;
-			this.mailReader = mailReader;
-			InitializeComponent();
-			listAttachment.ItemSelectionChanged += listAttachment_SelectedIndexChanged;
 		}
 
 		protected override void OnLoad(EventArgs e)
@@ -127,19 +131,19 @@ namespace Mail.Client
 
 		private void MainForm_Load(object sender, EventArgs e)
 		{
-		    var sendingConfig = configuration.GetConfig<SendingConnection>();
-		    Port = sendingConfig.Port;
-		    UseSecureConnection = sendingConfig.UseSecureConnection;
-		    Username = sendingConfig.LogonUsername;
-		    Password = sendingConfig.LogonPassword;
-		    Server = sendingConfig.ServerAddress;
-		    var sendingTemplateConfig = configuration.GetConfig<SendingTemplate>();
-		    MailFrom = sendingTemplateConfig.From;
-		    To = sendingTemplateConfig.To;
-		    Cc = sendingTemplateConfig.Cc;
-		    Bcc = sendingTemplateConfig.Bcc;
-		    Subject = sendingTemplateConfig.Subject;
-		    Message = sendingTemplateConfig.Body;
+			var sendingConfig = _configuration.GetConfig<SendingConnection>();
+			Port = sendingConfig.Port;
+			UseSecureConnection = sendingConfig.UseSecureConnection;
+			Username = sendingConfig.LogonUsername;
+			Password = sendingConfig.LogonPassword;
+			Server = sendingConfig.ServerAddress;
+			var sendingTemplateConfig = _configuration.GetConfig<SendingTemplate>();
+			MailFrom = sendingTemplateConfig.From;
+			To = sendingTemplateConfig.To;
+			Cc = sendingTemplateConfig.Cc;
+			Bcc = sendingTemplateConfig.Bcc;
+			Subject = sendingTemplateConfig.Subject;
+			Message = sendingTemplateConfig.Body;
 		}
 
 		private void btnAddAttachment_Click(object sender, EventArgs e)
@@ -158,7 +162,7 @@ namespace Mail.Client
 					file => listAttachment.Items.Add(new ListViewItem
 					{
 						Name = file,
-						Text = System.IO.Path.GetFileName(file),
+						Text = Path.GetFileName(file),
 						ToolTipText = file
 					}));
 			}
@@ -173,10 +177,8 @@ namespace Mail.Client
 		private void btnDeleteAttachment_Click(object sender, EventArgs e)
 		{
 			foreach (ListViewItem item in listAttachment.Items)
-			{
 				if (item.Selected)
 					listAttachment.Items.Remove(item);
-			}
 
 			btnDeleteAttachment.Enabled = false;
 		}
@@ -193,53 +195,49 @@ namespace Mail.Client
 			};
 			if (Cc != null) mail.Cc = new AddressCollection(Cc);
 			if (Bcc != null) mail.Bcc = new AddressCollection(Bcc);
-			foreach (ListViewItem item in listAttachment.Items)
-			{
-				mail.Attachments.Add(new Attachment { Path = item.Name });
-			}
+			foreach (ListViewItem item in listAttachment.Items) mail.Attachments.Add(new Attachment { Path = item.Name });
 
 			return mail;
 		}
 
-		private SendConnection BuildSendConnection()
+		private SendConnection BuildSendConnection() => new SendConnection(Server, Port)
 		{
-			return new SendConnection(Server, Port)
-			{
-				Username = Username,
-				Password = Password,
-				Security = !UseSecureConnection ? SecureType.None : SecureType.Default
-			};
-		}
+			Username = Username,
+			Password = Password,
+			Security = !UseSecureConnection ? SecureType.None : SecureType.Default
+		};
 
-        private void btnSave_Click(object sender, EventArgs e)
-        {
-            var connectionConfig = new SendingConnection
-            {
-                ServerAddress = Server,
-                LogonUsername = Username,
-                LogonPassword = Password,
-                Port = Port,
-                UseSecureConnection = UseSecureConnection
-            };
-            configuration.SetConfig(connectionConfig);
-            var templateConfig = new SendingTemplate
-            {
-                Subject = Subject,
-                From = MailFrom,
-                To = To,
-                Cc = Cc,
-                Bcc = Bcc
-            };
-            configuration.SetConfig(templateConfig);
-            try
-            {
-                configuration.Write();
-                MessageBox.Show($"Successfully saved configuration to '{configuration.Path}'", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (System.IO.IOException)
-            {
-                MessageBox.Show($"Can't save configuration to '{configuration.Path}'", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-    }
+		private void btnSave_Click(object sender, EventArgs e)
+		{
+			var connectionConfig = new SendingConnection
+			{
+				ServerAddress = Server,
+				LogonUsername = Username,
+				LogonPassword = Password,
+				Port = Port,
+				UseSecureConnection = UseSecureConnection
+			};
+			_configuration.SetConfig(connectionConfig);
+			var templateConfig = new SendingTemplate
+			{
+				Subject = Subject,
+				From = MailFrom,
+				To = To,
+				Cc = Cc,
+				Bcc = Bcc
+			};
+			_configuration.SetConfig(templateConfig);
+			try
+			{
+				_configuration.Write();
+				MessageBox.Show($"Successfully saved configuration to '{_configuration.Path}'", "Info", MessageBoxButtons.OK,
+					MessageBoxIcon.Information);
+			}
+			catch (IOException)
+			{
+				MessageBox.Show($"Can't save configuration to '{_configuration.Path}'", "Error!", MessageBoxButtons.OK,
+					MessageBoxIcon.Error);
+			}
+		}
+	}
 }
