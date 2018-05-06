@@ -68,8 +68,7 @@ namespace Mail.Library
 			if (!string.IsNullOrEmpty(address))
 			{
 				_originalAddress = address;
-				string email, display;
-				ParseDestination(address, out email, out display);
+				ParseDestination(address, out string email, out string display);
 				if (!string.IsNullOrEmpty(email)) Email = email;
 				if (!string.IsNullOrEmpty(display)) Display = display;
 				_isOriginalAddressValid = !string.IsNullOrEmpty(email);
