@@ -23,7 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{FF601C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{FCF6D512-BD51-4962-8CED-0849772E065E}"
 	ProjectSection(SolutionItems) = preProject
-		Misc\build-packages.config = Misc\build-packages.config
+		Misc\packages.build.config = Misc\packages.build.config
 		README.md = README.md
 		Misc\SharedAssemblyInfo.cs = Misc\SharedAssemblyInfo.cs
 	EndProjectSection
