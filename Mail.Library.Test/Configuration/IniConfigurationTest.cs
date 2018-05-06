@@ -7,25 +7,10 @@ using NUnit.Framework;
 
 namespace Mail.Library.Test.Configuration
 {
-    [TestFixture]
+	[TestFixture]
 	[Category("INIConfiguration")]
-	class IniConfigurationTest
+	internal class IniConfigurationTest
 	{
-		private IniConfiguration _configuration;
-		private IniConfiguration _blankConfiguration;
-	    private readonly string _tempPath = Path.GetTempFileName();
-
-		private string OriginalAssemblyLocation
-		{
-			get
-			{
-				string original = typeof(IniConfigurationTest).Assembly.CodeBase;
-				string path = Regex.Replace(original, @"^file:/+", string.Empty, RegexOptions.IgnoreCase);
-				path = path.Replace('/', '\\');
-				return Path.GetDirectoryName(path);
-			}
-		}
-
 		[TestFixtureSetUp]
 		public void Setup()
 		{
@@ -36,17 +21,43 @@ namespace Mail.Library.Test.Configuration
 			_blankConfiguration = new IniConfiguration();
 		}
 
-        [TestFixtureTearDown]
-	    public void Finish()
-	    {
-	        if (string.IsNullOrEmpty(_tempPath)) return;
-            try
-            {
-                File.Delete(_tempPath);
-            }
-            catch (IOException)
-            { }
-	    }
+		[TestFixtureTearDown]
+		public void Finish()
+		{
+			if (string.IsNullOrEmpty(_tempPath)) return;
+			try
+			{
+				File.Delete(_tempPath);
+			}
+			catch (IOException)
+			{
+			}
+		}
+
+		[Test]
+		public void DumpTest()
+		{
+			var file = new IniConfiguration(_configuration.Path);
+			file.Parse();
+			var config1 = file.GetConfig<Metadata>();
+			config1.NotFound3 = 100;
+			config1.NotFound2 = false;
+			config1.NotFound4 = 250m;
+			file.SetConfig(config1);
+			file.SetConfig("New Section", "new key", "new value");
+			file.Write(_tempPath, true);
+			file.Path = _tempPath;
+			file.Parse();
+
+			config1 = file.GetConfig<Metadata>();
+			Assert.That(config1.NotFound2, Is.EqualTo(false));
+			Assert.That(config1.NotFound3, Is.EqualTo(100));
+			Assert.That(config1.NotFound4, Is.EqualTo(250m));
+			Assert.That(file.GetConfig<string>("new section", "new key"), Is.EqualTo("new value"));
+
+			Assert.That(file.GetConfig<string>("mailer", "sender"), Is.EqualTo("MailKit"));
+			Assert.That(file.GetConfig<string>("mailer", "reader"), Is.EqualTo("builtin"));
+		}
 
 		[Test]
 		public void GetWithMetadataTest()
@@ -61,7 +72,7 @@ namespace Mail.Library.Test.Configuration
 			var config2 = _configuration.GetConfig<Library>();
 			Assert.That(config2.Sender, Is.EqualTo("MailKit"));
 			Assert.That(config2.Reader, Is.EqualTo("builtin"));
-            Assert.That(config2.Dummy, Is.EqualTo(null));
+			Assert.That(config2.Dummy, Is.EqualTo(null));
 
 			var config3 = _blankConfiguration.GetConfig<Metadata>();
 			Assert.That(config3.Position, Is.EqualTo(-1d));
@@ -120,32 +131,24 @@ namespace Mail.Library.Test.Configuration
 			Assert.That(file.GetConfig<int>("key4"), Is.EqualTo(4));
 		}
 
-        [Test]
-	    public void DumpTest()
-	    {
-	        var file = new IniConfiguration(_configuration.Path);
-            file.Parse();
-            var config1 = file.GetConfig<Metadata>();
-            config1.NotFound3 = 100;
-            config1.NotFound2 = false;
-            config1.NotFound4 = 250m;
-            file.SetConfig(config1);
-            file.SetConfig("New Section", "new key", "new value");
-            file.Write(_tempPath, true);
-            file.Path = _tempPath;
-            file.Parse();
+		#region non test
 
-            config1 = file.GetConfig<Metadata>();
-            Assert.That(config1.NotFound2, Is.EqualTo(false));
-            Assert.That(config1.NotFound3 , Is.EqualTo(100));
-            Assert.That(config1.NotFound4, Is.EqualTo(250m));
-            Assert.That(file.GetConfig<string>("new section", "new key"), Is.EqualTo("new value"));
+		private IniConfiguration _configuration;
+		private IniConfiguration _blankConfiguration;
+		private readonly string _tempPath = Path.GetTempFileName();
 
-            Assert.That(file.GetConfig<string>("mailer", "sender"), Is.EqualTo("MailKit"));
-            Assert.That(file.GetConfig<string>("mailer", "reader"), Is.EqualTo("builtin"));
-        }
+		private string OriginalAssemblyLocation
+		{
+			get
+			{
+				string original = typeof(IniConfigurationTest).Assembly.CodeBase;
+				string path = Regex.Replace(original, @"^file:/+", string.Empty, RegexOptions.IgnoreCase);
+				path = path.Replace('/', '\\');
+				return Path.GetDirectoryName(path);
+			}
+		}
 
-        [IniSection("Another Section")]
+		[IniSection("Another Section")]
 		public class Metadata
 		{
 			[IniKey("position", -1d)]
@@ -172,7 +175,9 @@ namespace Mail.Library.Test.Configuration
 			[IniKey("reader")]
 			public string Reader { get; set; }
 
-		    public string Dummy { get; set; }
+			public string Dummy { get; set; }
 		}
+
+		#endregion
 	}
 }
