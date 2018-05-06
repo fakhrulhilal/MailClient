@@ -1,5 +1,7 @@
 # MailClient
 
+![build status](https://fakhrulhilal.visualstudio.com/_apis/public/build/definitions/550a8968-7ff6-4dbe-8e2a-f186fa7f2c26/3/badge)
+
 Simple mail client that uses MEF for pluggable sender/reader. 
 
 Originally, this project is created for learning [MEF](https://docs.microsoft.com/en-us/dotnet/framework/mef/). Currently, only `sender` is implemented.
