@@ -8,10 +8,10 @@ namespace Mail.Library
 	/// </summary>
 	public class Address : IValidatable
 	{
-		private const string MailRegex = @"(?<mail>(?<username>[a-z0-9\._]+)@(?<domain>[a-z0-9\-\._]+\.\w+))";
 		private readonly string _fullRegex = $@"(?<display>[a-z0-9,\.\-_ ]+)\s*\<{MailRegex}>";
-        private readonly string _originalAddress;
 		private readonly bool _isOriginalAddressValid = true;
+		private readonly string _originalAddress;
+		private const string MailRegex = @"(?<mail>(?<username>[a-z0-9\._]+)@(?<domain>[a-z0-9\-\._]+\.\w+))";
 		public string Display { get; set; }
 
 		/// <summary>
@@ -20,7 +20,7 @@ namespace Mail.Library
 		public string Email { get; set; }
 
 		/// <summary>
-		/// Username in <see cref="Email"/>
+		/// Username in <see cref="Email" />
 		/// </summary>
 		public string Username
 		{
@@ -35,7 +35,7 @@ namespace Mail.Library
 		}
 
 		/// <summary>
-		/// Domain in <see cref="Email"/>
+		/// Domain in <see cref="Email" />
 		/// </summary>
 		public string Domain
 		{
@@ -110,10 +110,7 @@ namespace Mail.Library
 		/// Give full email address representation
 		/// </summary>
 		/// <returns></returns>
-		public override string ToString()
-		{
-			return FullAddress;
-		}
+		public override string ToString() => FullAddress;
 
 		private void ParseDestination(string emailFormat, out string address, out string display)
 		{
@@ -130,11 +127,7 @@ namespace Mail.Library
 			}
 
 			match = Regex.Match(emailFormat, MailRegex, RegexOptions.IgnoreCase);
-			if (match.Success)
-			{
-				address = match.Groups["mail"].Value.Trim();
-			}
+			if (match.Success) address = match.Groups["mail"].Value.Trim();
 		}
-
 	}
 }

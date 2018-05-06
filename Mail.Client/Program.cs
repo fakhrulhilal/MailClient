@@ -11,7 +11,7 @@ namespace Mail.Client
 		private static string ApplicationPath => Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
 		/// <summary>
-		///     The main entry point for the application.
+		/// The main entry point for the application.
 		/// </summary>
 		[STAThread]
 		private static void Main()
@@ -19,7 +19,7 @@ namespace Mail.Client
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			var importer = new Importer();
-			var configPath = Path.Combine(ApplicationPath, "config.ini");
+			string configPath = Path.Combine(ApplicationPath, "config.ini");
 			var configuration = new IniConfiguration(configPath);
 			try
 			{

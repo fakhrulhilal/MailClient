@@ -9,19 +9,13 @@ namespace Mail.Library
 	/// </summary>
 	public class Message : IValidatable, IComposable<MailMessage>
 	{
-		public Message()
-		{
-			UseHtml = true;
-			Attachments = new List<Attachment>();
-		}
-
 		/// <summary>
 		/// Email body
 		/// </summary>
 		public string Body { get; set; }
 
 		/// <summary>
-		/// Determine whether <see cref="Body"/> uses HTML format or not
+		/// Determine whether <see cref="Body" /> uses HTML format or not
 		/// </summary>
 		public bool UseHtml { get; set; }
 
@@ -38,7 +32,7 @@ namespace Mail.Library
 		/// <summary>
 		/// Email attachments
 		/// </summary>
-		public List<Attachment> Attachments { get; private set; }
+		public List<Attachment> Attachments { get; }
 
 		/// <summary>
 		/// Email To recipient
@@ -55,38 +49,11 @@ namespace Mail.Library
 		/// </summary>
 		public AddressCollection Bcc { get; set; }
 
-		/// <summary>
-		/// Validate email message
-		/// </summary>
-		/// <returns>Validation result</returns>
-		public Validation Validate()
+		public Message()
 		{
-			var message = new List<string>();
-			Validation validation;
-			if (string.IsNullOrEmpty(Sender?.Email)) message.Add("Sender/from is required");
-			if (string.IsNullOrEmpty(Body)) message.Add("Message body is required");
-			if (To == null || To.Count < 1)
-				message.Add("Please specifiy at least 1 destination To address");
-			else
-			{
-				validation = To.Validate();
-				if (!validation.IsValid) message.AddRange(validation.Messages);
-			}
-			Cc = Cc ?? new AddressCollection();
-			validation = Cc.Validate("CC:");
-			if (!validation.IsValid) message.AddRange(validation.Messages);
-			Bcc = Bcc ?? new AddressCollection();
-			validation = Bcc.Validate("BCC:");
-			if (!validation.IsValid) message.AddRange(validation.Messages);
-
-			return new Validation(message);
+			UseHtml = true;
+			Attachments = new List<Attachment>();
 		}
-		
-		/// <summary>
-		/// Validate email message
-		/// </summary>
-		/// <returns>Validation result</returns>
-		public Validation Validate(string prefix) => Validate();
 
 		MailMessage IComposable<MailMessage>.Compose()
 		{
@@ -112,5 +79,41 @@ namespace Mail.Library
 			Attachments.ForEach(attachment => mail.Attachments.Add(new System.Net.Mail.Attachment(attachment.Path)));
 			return mail;
 		}
+
+		/// <summary>
+		/// Validate email message
+		/// </summary>
+		/// <returns>Validation result</returns>
+		public Validation Validate()
+		{
+			var message = new List<string>();
+			Validation validation;
+			if (string.IsNullOrEmpty(Sender?.Email)) message.Add("Sender/from is required");
+			if (string.IsNullOrEmpty(Body)) message.Add("Message body is required");
+			if (To == null || To.Count < 1)
+			{
+				message.Add("Please specifiy at least 1 destination To address");
+			}
+			else
+			{
+				validation = To.Validate();
+				if (!validation.IsValid) message.AddRange(validation.Messages);
+			}
+
+			Cc = Cc ?? new AddressCollection();
+			validation = Cc.Validate("CC:");
+			if (!validation.IsValid) message.AddRange(validation.Messages);
+			Bcc = Bcc ?? new AddressCollection();
+			validation = Bcc.Validate("BCC:");
+			if (!validation.IsValid) message.AddRange(validation.Messages);
+
+			return new Validation(message);
+		}
+
+		/// <summary>
+		/// Validate email message
+		/// </summary>
+		/// <returns>Validation result</returns>
+		public Validation Validate(string prefix) => Validate();
 	}
 }

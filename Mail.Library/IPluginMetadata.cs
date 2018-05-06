@@ -1,6 +1,6 @@
 ﻿namespace Mail.Library
 {
-    public interface IPluginMetadata
+	public interface IPluginMetadata
 	{
 		/// <summary>
 		/// Plugin name

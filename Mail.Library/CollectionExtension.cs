@@ -19,9 +19,9 @@ namespace Mail.Library
 		{
 			if (collection == null) throw new ArgumentNullException(nameof(collection));
 			return collection
-				.Where(element => !string.IsNullOrWhiteSpace(keySelector(element)))
-				.GroupBy(element => keySelector(element).Trim().ToLower())
-				.Select(element => element.Last());
+				   .Where(element => !string.IsNullOrWhiteSpace(keySelector(element)))
+				   .GroupBy(element => keySelector(element).Trim().ToLower())
+				   .Select(element => element.Last());
 		}
 
 		/// <summary>
@@ -34,9 +34,9 @@ namespace Mail.Library
 		{
 			if (collection == null) throw new ArgumentNullException(nameof(collection));
 			return collection
-				.Where(element => !string.IsNullOrWhiteSpace(element))
-				.GroupBy(element => element.Trim().ToLower())
-				.Select(element => element.Last());
+				   .Where(element => !string.IsNullOrWhiteSpace(element))
+				   .GroupBy(element => element.Trim().ToLower())
+				   .Select(element => element.Last());
 		}
 	}
 }
