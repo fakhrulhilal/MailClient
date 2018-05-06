@@ -6,6 +6,7 @@ using NUnit.Framework;
 namespace Mail.Library.Test
 {
 	[TestFixture]
+	[Parallelizable(ParallelScope.Children)]
 	public class CollectionExtensionTest
 	{
 		[Test]

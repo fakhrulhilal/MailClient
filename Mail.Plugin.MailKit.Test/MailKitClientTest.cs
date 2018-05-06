@@ -10,15 +10,16 @@ using NUnit.Framework;
 namespace Mail.Plugin.MailKit.Test
 {
 	[TestFixture]
+	[Parallelizable(ParallelScope.Self)]
 	internal class MailKitClientTest
 	{
 		[SetUp]
-		public void TestSetUp() => _files.Clear();
+		public void TestSetUp() => Files.Clear();
 
 		[TearDown]
 		public void TestFinish()
 		{
-			foreach (var file in _files.Where(f => !string.IsNullOrEmpty(f.Path) && File.Exists(f.Path)))
+			foreach (var file in Files.Where(f => !string.IsNullOrEmpty(f.Path) && File.Exists(f.Path)))
 				try
 				{
 					File.Delete(file.Path);
@@ -28,7 +29,7 @@ namespace Mail.Plugin.MailKit.Test
 				}
 		}
 
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void SetUp()
 		{
 			_server = SimpleSmtpServer.Start(Default.Port);
@@ -36,7 +37,7 @@ namespace Mail.Plugin.MailKit.Test
 			_connection = new SendConnection(Default.ServerHost, _server.Port);
 		}
 
-		[TestFixtureTearDown]
+		[OneTimeTearDown]
 		public void Finish() => _server.Stop();
 
 		[Test]
@@ -63,16 +64,16 @@ namespace Mail.Plugin.MailKit.Test
 		private SimpleSmtpServer _server;
 		private IMailSender _client;
 		private SendConnection _connection;
-		private readonly List<Attachment> _files = new List<Attachment>();
+		private static readonly List<Attachment> Files = new List<Attachment>();
 
-		private void GenerateAttachments()
+		private static void GenerateAttachments()
 		{
 			var random = new Random();
 			for (int i = 0, total = random.Next(1, 5); i < total; i++)
 			{
 				string tempFileName = Path.GetTempFileName();
 				File.WriteAllText(tempFileName, Default.Text);
-				_files.Add(new Attachment
+				Files.Add(new Attachment
 				{
 					Path = tempFileName,
 					MimeType = "text/plain"
@@ -80,7 +81,7 @@ namespace Mail.Plugin.MailKit.Test
 			}
 		}
 
-		private IEnumerable SendingSource
+		private static IEnumerable SendingSource
 		{
 			// ReSharper disable once UnusedMember.Local - called internally by NUnit
 			get
@@ -125,7 +126,7 @@ namespace Mail.Plugin.MailKit.Test
 					Sender = Default.Sender,
 					To = new AddressCollection(Default.Email)
 				};
-				_files.ForEach(file => message.Attachments.Add(file));
+				Files.ForEach(file => message.Attachments.Add(file));
 				yield return new TestCaseData(message).SetName("BuiltIn_WithAttachments").Returns(true);
 			}
 		}

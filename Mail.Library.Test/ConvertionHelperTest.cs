@@ -4,15 +4,17 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using NUnit.Framework;
+
 // ReSharper disable UnusedMember.Local - called by NUnit
 // ReSharper disable UnusedMember.Global - used for testing
 
 namespace Mail.Library.Test
 {
 	[TestFixture]
+	[Parallelizable(ParallelScope.Children)]
 	internal class ConvertionHelperTest
 	{
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void AllSetup()
 		{
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");

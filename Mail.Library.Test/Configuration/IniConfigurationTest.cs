@@ -11,7 +11,7 @@ namespace Mail.Library.Test.Configuration
 	[Category("INIConfiguration")]
 	internal class IniConfigurationTest
 	{
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void Setup()
 		{
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
@@ -21,7 +21,7 @@ namespace Mail.Library.Test.Configuration
 			_blankConfiguration = new IniConfiguration();
 		}
 
-		[TestFixtureTearDown]
+		[OneTimeTearDown]
 		public void Finish()
 		{
 			if (string.IsNullOrEmpty(_tempPath)) return;
