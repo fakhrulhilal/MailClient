@@ -24,6 +24,17 @@ namespace Mail.Plugin.MailSystem
 	{
 		private SmtpClient _client;
 
+		public void Dispose()
+		{
+			if (_client != null)
+			{
+				if (_client.IsConnected) _client.Disconnect();
+				_client = null;
+			}
+
+			GC.SuppressFinalize(this);
+		}
+
 		/// <summary>
 		/// Send email message
 		/// </summary>
@@ -55,9 +66,11 @@ namespace Mail.Plugin.MailSystem
 					var sslStream = new SslStream(_client.GetStream(), true, (sender, certificate, chain, errors) => true);
 					sslStream.Write(Encoding.UTF32.GetBytes("STLS\r\n"), 0, 6);
 					sslStream.AuthenticateAsClient(connection.Server, null, securityProtocol, false);
-					var sslHandShake = new SslHandShake(connection.Server, securityProtocol, (sender, certificate, chain, errors) => true);
+					var sslHandShake =
+						new SslHandShake(connection.Server, securityProtocol, (sender, certificate, chain, errors) => true);
 					_client.ConnectSsl(connection.Server, connection.Port, sslHandShake);
 				}
+
 				string hostname = Dns.GetHostName();
 				try
 				{
@@ -67,6 +80,7 @@ namespace Mail.Plugin.MailSystem
 				{
 					_client.Helo(hostname);
 				}
+
 				if (!string.IsNullOrEmpty(connection.Username) && !string.IsNullOrEmpty(connection.Password))
 					_client.Authenticate(connection.Username, connection.Password, SaslMechanism.Login);
 				if (!string.IsNullOrEmpty(mail.From.Email)) _client.MailFrom(mail.From.Email);
@@ -78,24 +92,13 @@ namespace Mail.Plugin.MailSystem
 				return true;
 			}
 			catch (Exception exception)
-			when (exception is SmtpException ||
-				  exception is SocketException ||
-				  exception is IOException)
+				when (exception is SmtpException ||
+					  exception is SocketException ||
+					  exception is IOException)
 			{
 				errorMessage = exception.GetLeafException();
 				return false;
 			}
-		}
-
-		public void Dispose()
-		{
-			if (_client != null)
-			{
-				if (_client.IsConnected) _client.Disconnect();
-				_client = null;
-			}
-
-			GC.SuppressFinalize(this);
 		}
 
 		private Message ConvertMessage(EmailMessage message)
@@ -112,17 +115,20 @@ namespace Mail.Plugin.MailSystem
 				mail.BodyHtml = new MimeBody(BodyFormat.Html) { Text = message.Body };
 			else
 				mail.BodyText = new MimeBody(BodyFormat.Text) { Text = message.Body };
-			Action<AddressCollection, string, string> add = (collection, email, display) =>
+
+			void Add(AddressCollection collection, string email, string display)
 			{
 				if (string.IsNullOrEmpty(display))
 					collection.Add(email);
 				else
 					collection.Add(email, display);
-			};
-			message.To.ForEach(dst => add(mail.To, dst.Email, dst.Display));
-			message.Cc.ForEach(dst => add(mail.Cc, dst.Email, dst.Display));
-			message.Bcc.ForEach(dst => add(mail.Bcc, dst.Email, dst.Display));
-			message.Attachments.ForEach(attachment => mail.Attachments.Add(File.ReadAllBytes(attachment.Path), attachment.Filename));
+			}
+
+			message.To.ForEach(dst => Add(mail.To, dst.Email, dst.Display));
+			message.Cc.ForEach(dst => Add(mail.Cc, dst.Email, dst.Display));
+			message.Bcc.ForEach(dst => Add(mail.Bcc, dst.Email, dst.Display));
+			message.Attachments.ForEach(attachment =>
+				mail.Attachments.Add(File.ReadAllBytes(attachment.Path), attachment.Filename));
 			return mail;
 		}
 	}

@@ -2,9 +2,9 @@
 
 namespace Mail.Library
 {
-    /// <summary>
-    /// Connection for reading email
-    /// </summary>
+	/// <summary>
+	/// Connection for reading email
+	/// </summary>
 	public class ReadConnection : BaseConnection
 	{
 		/// <summary>

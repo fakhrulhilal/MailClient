@@ -23,15 +23,6 @@ namespace Mail.Library
 		{
 		}
 
-		private List<Address> ParseMultipleAddress(string addresses, char separator = ';')
-		{
-			if (string.IsNullOrEmpty(addresses)) return new List<Address>();
-			var splitted = addresses.Split(separator);
-			var output = new List<Address>();
-			splitted.ToList().ForEach(address => output.Add(new Address(address.Trim())));
-			return output;
-		}
-
 		/// <summary>
 		/// Validate collection of email address
 		/// </summary>
@@ -48,11 +39,17 @@ namespace Mail.Library
 			if (Count < 1) return new Validation();
 			var validations = this.Select(address => address.Validate(prefix)).ToList();
 			var messages = new List<string>();
-			foreach (var validation in validations.Where(val => val.Messages.Any()))
-			{
-				messages.AddRange(validation.Messages);
-			}
+			foreach (var validation in validations.Where(val => val.Messages.Any())) messages.AddRange(validation.Messages);
 			return new Validation(messages);
+		}
+
+		private List<Address> ParseMultipleAddress(string addresses, char separator = ';')
+		{
+			if (string.IsNullOrEmpty(addresses)) return new List<Address>();
+			var splitted = addresses.Split(separator);
+			var output = new List<Address>();
+			splitted.ToList().ForEach(address => output.Add(new Address(address.Trim())));
+			return output;
 		}
 	}
 }

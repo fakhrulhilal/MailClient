@@ -10,6 +10,11 @@ namespace Mail.Library
 	public class Validation : IValidateResult
 	{
 		/// <summary>
+		/// All error validation messages
+		/// </summary>
+		public IEnumerable<string> Messages { get; }
+
+		/// <summary>
 		/// Initialize validation result
 		/// </summary>
 		public Validation()
@@ -23,18 +28,10 @@ namespace Mail.Library
 		/// <param name="messages">All error validation messages</param>
 		public Validation(IEnumerable<string> messages)
 		{
-			if (messages == null) throw new ArgumentNullException(nameof(messages));
-			Messages = messages;
+			Messages = messages ?? throw new ArgumentNullException(nameof(messages));
 		}
 
-		/// <summary>
-		/// Validation status: <code>true</code> when no error and vice versa
-		/// </summary>
+		/// <inheritdoc />
 		public bool IsValid => Messages == null || !Messages.Any();
-
-		/// <summary>
-		/// All error validation messages
-		/// </summary>
-		public IEnumerable<string> Messages { get; private set; }
 	}
 }

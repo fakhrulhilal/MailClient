@@ -4,7 +4,7 @@
 	/// Email protocol
 	/// </summary>
 	public enum MailProtocol
-    {
+	{
 		/// <summary>
 		/// Simple Mail Transport Protocol for sending email
 		/// </summary>
@@ -19,5 +19,5 @@
 		/// Post Office Protocol for reading email
 		/// </summary>
 		Pop
-    }
+	}
 }

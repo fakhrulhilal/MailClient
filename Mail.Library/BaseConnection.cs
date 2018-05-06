@@ -58,8 +58,8 @@ namespace Mail.Library
 
 		private void ValidateCredential()
 		{
-			if ((string.IsNullOrEmpty(Username) && !string.IsNullOrEmpty(Password)) ||
-				(!string.IsNullOrEmpty(Username) && string.IsNullOrEmpty(Password)))
+			if (string.IsNullOrEmpty(Username) && !string.IsNullOrEmpty(Password) ||
+				!string.IsNullOrEmpty(Username) && string.IsNullOrEmpty(Password))
 				ValidationMessages.Add(
 					"Username & password can't be blank together. " +
 					"If mail server doesn't require credential, then clear both username and password");

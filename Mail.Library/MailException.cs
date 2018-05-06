@@ -12,7 +12,8 @@ namespace Mail.Library
 		/// </summary>
 		/// <param name="message">Exception message</param>
 		public MailException(string message) : base(message)
-		{ }
+		{
+		}
 
 		/// <summary>
 		/// Initialize exception with message and inner exception
@@ -20,6 +21,7 @@ namespace Mail.Library
 		/// <param name="message">Exception message</param>
 		/// <param name="innerException">Inner exception</param>
 		public MailException(string message, Exception innerException) : base(message, innerException)
-		{ }
+		{
+		}
 	}
 }
