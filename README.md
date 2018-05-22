@@ -1,6 +1,8 @@
 # MailClient
 
 ![build status](https://fakhrulhilal.visualstudio.com/_apis/public/build/definitions/550a8968-7ff6-4dbe-8e2a-f186fa7f2c26/3/badge)
+![version](https://img.shields.io/github/release/fakhrulhilal/mailclient.svg)
+![license](https://img.shields.io/github/license/fakhrulhilal/mailclient.svg)
 
 Simple mail client that uses MEF for pluggable sender/reader. 
 
