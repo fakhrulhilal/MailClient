@@ -12,8 +12,9 @@ namespace Mail.Plugin.MailKit
 	/// Email client using MailKit library
 	/// </summary>
 	[Export(typeof(IMailSender))]
+	[Export(typeof(IMailExport))]
 	[ExportMetadata("Name", "MailKit")]
-	public class MailKitClient : IMailSender, IPluginMetadata, IDisposable
+	public class MailKitClient : IMailSender, IMailExport, IPluginMetadata, IDisposable
 	{
 		private readonly Type[] _authenticationExceptions =
 		{
@@ -126,5 +127,9 @@ namespace Mail.Plugin.MailKit
 		}
 
 		public string Name => "MailKit";
+
+		/// <inheritdoc />
+		public string SaveAsEml(Message message) =>
+			message?.Convert().ToString() ?? throw new ArgumentNullException(nameof(message));
 	}
 }

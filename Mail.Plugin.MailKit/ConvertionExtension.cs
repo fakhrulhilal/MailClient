@@ -42,12 +42,12 @@ namespace Mail.Plugin.MailKit
 			else
 				body.TextBody = message.Body;
 			foreach (var attachment in message.Attachments)
-				body.Attachments.Add(attachment.Filename, File.OpenRead(attachment.Path));
+				body.Attachments.Add(attachment.Filename, File.ReadAllBytes(attachment.Path));
 			output.Body = body.ToMessageBody();
 			output.From.Add(output.Sender);
 			message.To.ForEach(destination => output.To.Add(destination.Convert()));
-			message.Cc.ForEach(destination => output.Cc.Add(destination.Convert()));
-			message.Bcc.ForEach(destination => output.Bcc.Add(destination.Convert()));
+			message.Cc?.ForEach(destination => output.Cc.Add(destination.Convert()));
+			message.Bcc?.ForEach(destination => output.Bcc.Add(destination.Convert()));
 			return output;
 		}
 	}

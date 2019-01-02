@@ -59,8 +59,10 @@
   </Choose>
   <ItemGroup>
     <Compile Include="MailKitClientTest.cs" />
+    <Compile Include="MailKitExportTest.cs" />
     <Compile Include="MailParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TimeExtension.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mail.Library\Mail.Library.csproj">

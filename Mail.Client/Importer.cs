@@ -17,8 +17,12 @@ namespace Mail.Client
 		[ImportMany]
 		public IEnumerable<Lazy<IMailReader, IPluginMetadata>> Readers { get; set; }
 
+		[ImportMany]
+		public IEnumerable<Lazy<IMailExport, IPluginMetadata>> Exporters { get; set; }
+
 		internal IMailSender Sender { get; private set; }
 		internal IMailReader Reader { get; private set; }
+		internal IMailExport Exporter { get; private set; }
 		internal Configuration.Library Config { get; set; }
 
 		internal void Compose(Configuration.Library config)
@@ -33,6 +37,7 @@ namespace Mail.Client
 				container.ComposeParts(this);
 				Sender = Senders.FirstOrDefault(sender => sender.Metadata.Name.Equals(config.Sender))?.Value;
 				Reader = Readers.FirstOrDefault(reader => reader.Metadata.Name.Equals(config.Reader))?.Value;
+				Exporter = Exporters.FirstOrDefault(exporter => exporter.Metadata.Name.Equals(config.Exporter))?.Value;
 				aggregateCatalog.Dispose();
 				container.Dispose();
 			}

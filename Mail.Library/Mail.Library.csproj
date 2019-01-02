@@ -57,6 +57,7 @@
     <Compile Include="ConvertionHelper.cs" />
     <Compile Include="ExceptionExtension.cs" />
     <Compile Include="IComposable.cs" />
+    <Compile Include="IMailExport.cs" />
     <Compile Include="IMailReader.cs" />
     <Compile Include="IMailSender.cs" />
     <Compile Include="IPluginMetadata.cs" />

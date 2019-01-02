@@ -38,7 +38,7 @@ namespace Mail.Client
 				return;
 			}
 
-			Application.Run(new MainForm(importer.Sender, importer.Reader, configuration));
+			Application.Run(new MainForm(importer.Sender, importer.Reader, importer.Exporter, configuration));
 		}
 	}
 }

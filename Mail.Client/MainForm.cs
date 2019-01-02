@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using Mail.Client.Configuration;
 using Mail.Library;
@@ -16,6 +17,7 @@ namespace Mail.Client
 		// ReSharper disable once NotAccessedField.Local - used for feature enhancement
 		private readonly IMailReader _mailReader;
 		private readonly IMailSender _mailSender;
+		private readonly IMailExport _mailExporter;
 
 		#region Properties
 
@@ -87,8 +89,9 @@ namespace Mail.Client
 
 		#endregion
 
-		public MainForm(IMailSender mailSender, IMailReader mailReader, IniConfiguration configuration)
+		public MainForm(IMailSender mailSender, IMailReader mailReader, IMailExport mailExporter, IniConfiguration configuration)
 		{
+			_mailExporter = mailExporter;
 			_configuration = configuration;
 			_mailSender = mailSender;
 			_mailReader = mailReader;
@@ -221,6 +224,38 @@ namespace Mail.Client
 					MessageBoxIcon.Error);
 			}
 		}
+
+		private void btnExport_Click(object sender, EventArgs e)
+		{
+			if (_mailExporter == null)
+			{
+				MessageBox.Show("Exporter library is not configured properly", "Error!", MessageBoxButtons.OK,
+					MessageBoxIcon.Error);
+				return;
+			}
+
+			var exportDialog = new SaveFileDialog
+			{
+				Filter = "E-Mail Message | *.eml",
+				Title = "Export as EML mail message file",
+				FileName = SuggestValidFilename(Subject)
+			};
+			var dialogResult = exportDialog.ShowDialog(this);
+			var message = BuildMessage();
+			var validation = message.Validate();
+			if (!validation.IsValid)
+			{
+				MessageBox.Show("There are errors:\n- " + string.Join("\n- ", validation.Messages), "Errors!",
+					MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			}
+			else
+			{
+				if (dialogResult != DialogResult.OK)
+					return;
+				string content = _mailExporter.SaveAsEml(message);
+				CreateTextFile(exportDialog.FileName, content);
+			}
+		}
 		
 		#endregion
 
@@ -249,6 +284,21 @@ namespace Mail.Client
 			Password = Password,
 			Security = !UseSecureConnection ? SecureType.None : SecureType.Default
 		};
+
+		private string SuggestValidFilename(string name)
+		{
+			char[] invalidFileNameChars = Path.GetInvalidFileNameChars();
+			string filteredName = name;
+			void RemoveInvalidChar(char invalidChar) =>
+				filteredName = filteredName.Replace(invalidChar.ToString(), string.Empty);
+			Array.ForEach(invalidFileNameChars, RemoveInvalidChar);
+			return filteredName;
+		}
+
+		private void CreateTextFile(string filename, string content)
+		{
+			File.WriteAllText(filename, content, Encoding.GetEncoding(28591));
+		}
 
 		#endregion
 	}
