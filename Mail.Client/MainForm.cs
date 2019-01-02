@@ -13,9 +13,11 @@ namespace Mail.Client
 	public partial class MainForm : Form
 	{
 		private readonly IniConfiguration _configuration;
-		// ReSharper disable once NotAccessedField.Local - used for feature enhanchment
+		// ReSharper disable once NotAccessedField.Local - used for feature enhancement
 		private readonly IMailReader _mailReader;
 		private readonly IMailSender _mailSender;
+
+		#region Properties
 
 		private string MailFrom
 		{
@@ -83,6 +85,8 @@ namespace Mail.Client
 			set => chkSecure.Checked = value;
 		}
 
+		#endregion
+
 		public MainForm(IMailSender mailSender, IMailReader mailReader, IniConfiguration configuration)
 		{
 			_configuration = configuration;
@@ -91,6 +95,8 @@ namespace Mail.Client
 			InitializeComponent();
 			listAttachment.ItemSelectionChanged += listAttachment_SelectedIndexChanged;
 		}
+
+		#region Event handlers
 
 		private void btnSend_Click(object sender, EventArgs e)
 		{
@@ -183,30 +189,6 @@ namespace Mail.Client
 			btnDeleteAttachment.Enabled = false;
 		}
 
-		private MailMessage BuildMessage()
-		{
-			var mail = new MailMessage
-			{
-				UseHtml = true,
-				Body = Message,
-				Subject = Subject,
-				Sender = new Address(MailFrom),
-				To = new AddressCollection(To)
-			};
-			if (Cc != null) mail.Cc = new AddressCollection(Cc);
-			if (Bcc != null) mail.Bcc = new AddressCollection(Bcc);
-			foreach (ListViewItem item in listAttachment.Items) mail.Attachments.Add(new Attachment { Path = item.Name });
-
-			return mail;
-		}
-
-		private SendConnection BuildSendConnection() => new SendConnection(Server, Port)
-		{
-			Username = Username,
-			Password = Password,
-			Security = !UseSecureConnection ? SecureType.None : SecureType.Default
-		};
-
 		private void btnSave_Click(object sender, EventArgs e)
 		{
 			var connectionConfig = new SendingConnection
@@ -239,5 +221,35 @@ namespace Mail.Client
 					MessageBoxIcon.Error);
 			}
 		}
+		
+		#endregion
+
+		#region Helper functions
+
+		private MailMessage BuildMessage()
+		{
+			var mail = new MailMessage
+			{
+				UseHtml = true,
+				Body = Message,
+				Subject = Subject,
+				Sender = new Address(MailFrom),
+				To = new AddressCollection(To)
+			};
+			if (Cc != null) mail.Cc = new AddressCollection(Cc);
+			if (Bcc != null) mail.Bcc = new AddressCollection(Bcc);
+			foreach (ListViewItem item in listAttachment.Items) mail.Attachments.Add(new Attachment { Path = item.Name });
+
+			return mail;
+		}
+
+		private SendConnection BuildSendConnection() => new SendConnection(Server, Port)
+		{
+			Username = Username,
+			Password = Password,
+			Security = !UseSecureConnection ? SecureType.None : SecureType.Default
+		};
+
+		#endregion
 	}
 }
