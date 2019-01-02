@@ -1,6 +1,6 @@
 # MailClient
 
-![build status](https://fakhrulhilal.visualstudio.com/_apis/public/build/definitions/550a8968-7ff6-4dbe-8e2a-f186fa7f2c26/3/badge)
+[![Build status](https://dev.azure.com/fakhrulhilal/OpenSource/_apis/build/status/MailClient-CI)](https://dev.azure.com/fakhrulhilal/OpenSource/_build/latest?definitionId=3)
 ![version](https://img.shields.io/github/release/fakhrulhilal/mailclient.svg)
 ![license](https://img.shields.io/github/license/fakhrulhilal/mailclient.svg)
 
